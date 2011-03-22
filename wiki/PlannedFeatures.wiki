@@ -25,6 +25,20 @@ Con? Wis? Maybe
 
 Probably not Cha, although I could import the haggling code from ligers.
 
+Stats will be determined partly by race, and partly by class, deterministically to avoid start scumming.
+
+
+= Classes =
+
+Lots.
+
+= Races =
+
+Lots more.
+
+= Skills =
+
+It's going to be hard to avoid ripping off Crawl's excellent system.  Maybe I shouldn't.
 
 
 = Movement =
@@ -44,6 +58,9 @@ Faster movement, at the cost of lower stealth and eventual weariness (dependent 
 Slower movement, but better stealth.  How much better?  20%?  Should probably scale with skill instead of being a flat bonus.
 
 
+= Monsters =
+
+Monsters will have a "genus" and a "species" attribute.  Genus will be something general like "dragon", "canine", or "orc", and the species will be the specific creature type, like "red dragon", "war dog", or "orc warlock".
 
 
 
