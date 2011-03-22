@@ -8,7 +8,6 @@ import math
 #
 ############################################################
 
-# Test commit yo
 
 # Max monsters per room
 MAX_ROOM_MONSTERS = 3
