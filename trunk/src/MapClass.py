@@ -4,11 +4,7 @@ import libtcodpy as libtcod
 # Internal imports
 from TileClass import *
 
-# Wall and ground colors
-color_dark_wall = libtcod.Color(0, 0, 100)
-color_light_wall = libtcod.Color(130, 110, 50)
-color_dark_ground = libtcod.Color(50, 50, 150)
-color_light_ground = libtcod.Color(200, 180, 50)
+
 
 # Max monsters per room
 MAX_ROOM_MONSTERS = 3
