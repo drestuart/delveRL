@@ -1,0 +1,52 @@
+#summary A list of planned features for delve.  Combination TODO list / notepad.
+
+= Plot =
+
+That would be nice.
+
+
+= Alignment =
+
+The alignment system will be important, and reminiscent of the D&D system.
+
+== Alignments ==
+
+Two axes: L-N-C and G-N-E.
+
+== Altars ==
+
+Altars will be aligned, but not god-specific.  Altars have one of 5 alignments: L, C, G, E, N.  An altar is usable if its alignment matches one of the player's alignments.
+
+= Stats =
+
+Str, Dex, Int for sure.
+
+Con? Wis? Maybe
+
+Probably not Cha, although I could import the haggling code from ligers.
+
+
+
+= Movement =
+
+Three movement speeds: Walking (normal), Running, Sneaking
+
+== Walking ==
+
+The default movement mode.  Normal speed and stealth, no penalties.
+
+== Running ==
+
+Faster movement, at the cost of lower stealth and eventual weariness (dependent on Con?).
+
+== Sneaking ==
+
+Slower movement, but better stealth.  How much better?  20%?  Should probably scale with skill instead of being a flat bonus.
+
+
+
+
+
+
+
+
