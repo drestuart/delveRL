@@ -62,6 +62,20 @@ Slower movement, but better stealth.  How much better?  20%?  Should probably sc
 
 Monsters will have a "genus" and a "species" attribute.  Genus will be something general like "dragon", "canine", or "orc", and the species will be the specific creature type, like "red dragon", "war dog", or "orc warlock".
 
+= Damage Types =
+
+Physical (all partially resistable, and reduced by AC)
+  Bludgeoning
+  Piercing
+  Slashing
+Magical (non-elemental, nonresistable, reduced by spell resistance?)
+Fire
+Cold
+Electricity
+Acid
+Negative
+
+Resistances and vulnerabilities are independent (from gear) for characters, probably not for creatures.
 
 
 
