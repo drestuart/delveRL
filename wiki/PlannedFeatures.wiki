@@ -64,20 +64,18 @@ Monsters will have a "genus" and a "species" attribute.  Genus will be something
 
 = Damage Types =
 
-Physical (all partially resistable, and reduced by AC)
-  Bludgeoning
-  Piercing
-  Slashing
-Magical (non-elemental, nonresistable, reduced by spell resistance?)
-Fire
-Cold
-Electricity
-Acid
-Negative
+  * Physical (all partially resistable, and reduced by AC)
+    * Bludgeoning
+    * Piercing
+    * Slashing
+  * Magical (non-elemental, nonresistable, reduced by spell resistance?)
+  * Fire
+  * Cold
+  * Electricity
+  * Acid
+  * Negative
 
 Resistances and vulnerabilities are independent (from gear) for characters, probably not for creatures.
-
-
 
 
 
