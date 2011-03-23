@@ -77,11 +77,6 @@ class Object:
             libtcod.console_put_char_ex(con, self.x, self.y, '.', 
                                         libtcod.white, libtcod.dark_blue)
 
-    #def clear(self):
-        #erase the character that represents this object
-     #   libtcod.console_put_char(con, self.x, self.y, 
-      #                           ' ', libtcod.BKGND_NONE)
-
     def move_towards(self, target_x, target_y):
         #vector from this object to the target, and distance
         dx = target_x - self.x
