@@ -13,6 +13,8 @@ The alignment system will be important, and reminiscent of the D&D system.
 
 Two axes: L-N-C and G-N-E.
 
+It would be neat to have an alignment-based quest.  Go kill a god of an opposed alignment?  Take your pick for true neutrals?
+
 == Altars ==
 
 Altars will be aligned, but not god-specific.  Altars have one of 5 alignments: L, C, G, E, N.  An altar is usable if its alignment matches one of the player's alignments.
@@ -76,6 +78,52 @@ Monsters will have a "genus" and a "species" attribute.  Genus will be something
   * Negative
 
 Resistances and vulnerabilities are independent (from gear) for characters, probably not for creatures.
+
+= Items =
+
+The usual types, with the usual symbols:
+
+) -- weapon
+
+( -- Ammo?
+
+][ -- Armor
+
+=" -- Ring/amulet
+
+% -- Corpse/food
+
+? -- scroll
+
+:+ -- book
+
+
+
+== Materials ==
+
+It would be neat to implement different materials with different properties, like hardness and modified damage to some creatures.
+
+  * metal, for armor and weapons
+    * iron/steel
+    * mithril?/something more creative
+    * cold iron?
+    * silver
+  * meat (or something less gross), for corpses
+  * leather, for armor and some weapons
+  * paper, for books and scrolls
+  * glass, for potions and some items
+  * wood, for some weapons and shields?
+
+
+
+
+
+
+
+
+
+
+
 
 
 
