@@ -16,10 +16,12 @@ color_light_ground = libtcod.Color(200, 180, 50)
 
 class Tile:
     #a tile of the map and its properties
-    def __init__(self, block_move = False, block_sight = False, base_symbol = '.', 
+    def __init__(self, x = 0, y = 0, block_move = False, block_sight = False, base_symbol = '.', 
                  color = color_light_ground, background = libtcod.BKGND_NONE, 
                  feature = None):
         
+        self.x = x
+        self.y = y
         self.block_move = block_move
         self.block_sight = block_sight
         self.base_symbol = base_symbol
@@ -29,8 +31,7 @@ class Tile:
         self.objects = []      # The objects on this tile 
         self.creature = None   #The creature on this tile.  The ONE creature, by the way.
         
-        if feature:
-            self.feature = feature
+        self.feature = feature
             
     def toDraw(self):
         # Returns a tuple of the tile's symbol, color, and background for the drawing functionality 
@@ -98,6 +99,16 @@ class Tile:
         
         else:
             return self.base_symbol
+    
+    # drawing management stuff. will be moved to the console class?    
+    def draw(self, con):
+        #set the color and then draw the character that represents this object at its position
+        libtcod.console_set_foreground_color(con, self.color)
+        libtcod.console_put_char(con, self.x, self.y, self.symbol(), self.background)
+ 
+    def clear(self, con):
+        #erase the character that represents this object
+        libtcod.console_put_char(con, self.x, self.y, ' ', libtcod.BKGND_NONE)
         
         
         
