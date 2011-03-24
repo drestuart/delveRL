@@ -19,17 +19,33 @@ FONTS_DIR = "../fonts"
  
 #actual size of the window
 SCREEN_WIDTH = 80
-SCREEN_HEIGHT = 50
+SCREEN_HEIGHT = 69  # Dudes!
  
 LIMIT_FPS = 20  #20 frames-per-second maximum
 
-testTile = Tile(x = SCREEN_WIDTH/2, y = SCREEN_HEIGHT/2, base_symbol = '@', color = libtcod.green) 
- 
 libtcod.console_set_custom_font(os.path.join(FONTS_DIR, 'arial10x10.png'), 
                                 libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'python/libtcod tutorial', False)
 libtcod.sys_set_fps(LIMIT_FPS)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+
+class fakeCreature:
+    symbol = '&'
+    color = libtcod.green
+    is_visible = (lambda x: True) 
+    
+class fakeObject:
+    symbol = '('
+    color = libtcod.red
+    
+#cr = fakeCreature()
+ob = fakeObject()
+
+testTile = Tile(x = SCREEN_WIDTH/2, y = SCREEN_HEIGHT/2, base_symbol = '.') 
+#testTile.add_creature(cr)
+testTile.add_object(ob)
+
  
 while not libtcod.console_is_window_closed():
  

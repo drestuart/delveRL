@@ -1,3 +1,7 @@
+# The map class.  This will contain the code for creating and displaying maps.
+# The plan is to have two maps: the *actual* level map, and the player's map
+# showing what they know/remember about the level.
+
 # External imports
 import libtcodpy as libtcod
 
@@ -12,7 +16,7 @@ MAX_ROOM_MONSTERS = 3
 # Max items per room
 MAX_ROOM_ITEMS = 2
 
-# Field of view costants
+# Field of view constants
 FOV_ALGO = 0  #default FOV algorithm
 FOV_LIGHT_WALLS = True
 TORCH_RADIUS = 10
@@ -48,191 +52,178 @@ class Rect:
                 self.y1 <= other.y2 and self.y2 >= other.y1)
         
         
-# Create a room
-
-def create_room(room):
-    global map
-    #go through the tiles in the rectangle and make them passable
-    for x in range(room.x1 + 1, room.x2):
-        for y in range(room.y1 + 1, room.y2):
-            map[x][y].blocked = False
-            map[x][y].block_sight = False
-
-# Carve out a horizontal tunnel
-
-def create_h_tunnel(x1, x2, y):
-    global map
-    for x in range(min(x1, x2), max(x1, x2) + 1):
-        map[x][y].blocked = False
-        map[x][y].block_sight = False
-
-# Carve out a vertical tunnel
-
-def create_v_tunnel(y1, y2, x):
-    global map
-    #vertical tunnel
-    for y in range(min(y1, y2), max(y1, y2) + 1):
-        map[x][y].blocked = False
-        map[x][y].block_sight = False
-
-
-# Test if a square is blocked
-def is_blocked(x, y):
-    #first test the map tile
-    if map[x][y].blocked:
-        return True
- 
-    #now check for any blocking objects
-    for object in objects:
-        if object.blocks and object.x == x and object.y == y:
-            return True
- 
-    return False        
+class Map:
         
+    def __init__(self, width, height, name = '', depth = 0):
+        self.WIDTH = width
+        self.HEIGHT = height
+        self.name = name
+        self.depth = depth
+
+        #fill map with "wall" tiles
+
+        self.tiles = [[ Tile(x, y, block_move = True, block_sight = True, base_symbol = '#', 
+                             base_color = color_dark_wall, base_description = 'Rock wall') 
+                             for y in range(self.HEIGHT) ]
+                             for x in range(self.WIDTH) ]
         
-# Build a simple map
-def make_map():
-    global map, player
- 
-    #fill map with "blocked" tiles
-    map = [[ Tile(True)
-             for y in range(MAP_HEIGHT) ]
-           for x in range(MAP_WIDTH) ]
+        rooms = []
+        num_rooms = 0
+     
+        for r in range(MAX_ROOMS):
+            #random width and height
+            w = libtcod.random_get_int(0, ROOM_MIN_SIZE, ROOM_MAX_SIZE)
+            h = libtcod.random_get_int(0, ROOM_MIN_SIZE, ROOM_MAX_SIZE)
     
-    rooms = []
-    num_rooms = 0
- 
-    for r in range(MAX_ROOMS):
-        #random width and height
-        w = libtcod.random_get_int(0, ROOM_MIN_SIZE, ROOM_MAX_SIZE)
-        h = libtcod.random_get_int(0, ROOM_MIN_SIZE, ROOM_MAX_SIZE)
+            #random position without going out of the boundaries of the map
+            x = libtcod.random_get_int(0, 0, self.WIDTH - w - 1)
+            y = libtcod.random_get_int(0, 0, self.HEIGHT - h - 1)
+    
+            #"Rect" class makes rectangles easier to work with
+            new_room = Rect(x, y, w, h)
+     
+            #run through the other rooms and see if they intersect with this one
+            failed = False
+            for other_room in rooms:
+                if new_room.intersect(other_room):
+                    failed = True
+                    break
+    
+            if not failed:
+                #this means there are no intersections, so this room is valid
+     
+                #"paint" it to the map's tiles
+                self.create_room(new_room)
+    
+                #add some contents to this room, such as monsters
+                self.place_objects(new_room)
+     
+                #center coordinates of new room, will be useful later
+                (new_x, new_y) = new_room.center()
+         
+                if num_rooms > 1:
+                    #all rooms after the first:
+                    #connect it to the previous room with a tunnel
+     
+                    #center coordinates of previous room
+                    (prev_x, prev_y) = rooms[num_rooms-1].center()
+     
+                    #draw a coin (random number that is either 0 or 1)
+                    if libtcod.random_get_int(0, 0, 1) == 1:
+                        #first move horizontally, then vertically
+                        self.create_h_tunnel(prev_x, new_x, prev_y)
+                        self.create_v_tunnel(prev_y, new_y, new_x)
+                    else:
+                        #first move vertically, then horizontally
+                        self.create_v_tunnel(prev_y, new_y, prev_x)
+                        self.create_h_tunnel(prev_x, new_x, new_y)
+    
+     
+                #finally, append the new room to the list
+                rooms.append(new_room)
+                num_rooms += 1
 
-        #random position without going out of the boundaries of the map
-        x = libtcod.random_get_int(0, 0, MAP_WIDTH - w - 1)
-        y = libtcod.random_get_int(0, 0, MAP_HEIGHT - h - 1)
+        
+        
+    
+    # Create a room
+    def create_room(self, room):
+        #go through the tiles in the rectangle and make them floors
+        for x in range(room.x1 + 1, room.x2):
+            for y in range(room.y1 + 1, room.y2):
+                self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
 
-        #"Rect" class makes rectangles easier to work with
-        new_room = Rect(x, y, w, h)
- 
-        #run through the other rooms and see if they intersect with this one
-        failed = False
-        for other_room in rooms:
-            if new_room.intersect(other_room):
-                failed = True
-                break
+    # Carve out a horizontal tunnel
+    def create_h_tunnel(self, x1, x2, y):
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
 
-        if not failed:
-            #this means there are no intersections, so this room is valid
- 
-            #"paint" it to the map's tiles
-            create_room(new_room)
+    # Carve out a vertical tunnel
+    def create_v_tunnel(self, y1, y2, x):
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
 
-            #add some contents to this room, such as monsters
-            place_objects(new_room)
- 
-            #center coordinates of new room, will be useful later
-            (new_x, new_y) = new_room.center()
- 
-            if num_rooms == 0:
-                #this is the first room, where the player starts at
-                player.x = new_x
-                player.y = new_y
 
-            else:
-                #all rooms after the first:
-                #connect it to the previous room with a tunnel
- 
-                #center coordinates of previous room
-                (prev_x, prev_y) = rooms[num_rooms-1].center()
- 
-                #draw a coin (random number that is either 0 or 1)
-                if libtcod.random_get_int(0, 0, 1) == 1:
-                    #first move horizontally, then vertically
-                    create_h_tunnel(prev_x, new_x, prev_y)
-                    create_v_tunnel(prev_y, new_y, new_x)
+    # Test if a square is blocked
+    def is_blocked(self, x, y):
+        return self.tiles[x][y].blocks_move()
+        
+
+
+    # Add some monsters! Rawr!
+    def place_objects(self, room):
+        # Disable for now
+        return
+        #choose random number of monsters
+        num_monsters = libtcod.random_get_int(0, 0, MAX_ROOM_MONSTERS)
+     
+        for i in range(num_monsters):
+            #choose random spot for this monster
+            x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
+            y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
+    
+            #only place it if the tile is not blocked
+            if not is_blocked(x, y):
+     
+                #80% chance of getting an orc
+                if libtcod.random_get_int(0, 0, 100) < 80:  
+                    
+                    #create an orc
+                    fighter_component = Fighter(hp=10, defense=0, power=3, 
+                                                death_function=monster_death)
+                    ai_component = BasicMonster()
+     
+                    monster = Object(x, y, 'o', 'orc', libtcod.desaturated_green,
+                        blocks=True, fighter=fighter_component, ai=ai_component)
                 else:
-                    #first move vertically, then horizontally
-                    create_v_tunnel(prev_y, new_y, prev_x)
-                    create_h_tunnel(prev_x, new_x, new_y)
-
- 
-            #finally, append the new room to the list
-            rooms.append(new_room)
-            num_rooms += 1
-
-
-# Add some monsters! Rawr!
-def place_objects(room):
-    #choose random number of monsters
-    num_monsters = libtcod.random_get_int(0, 0, MAX_ROOM_MONSTERS)
- 
-    for i in range(num_monsters):
-        #choose random spot for this monster
-        x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
-        y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
-
-        #only place it if the tile is not blocked
-        if not is_blocked(x, y):
- 
-            #80% chance of getting an orc
-            if libtcod.random_get_int(0, 0, 100) < 80:  
+                    #create a troll
+                    fighter_component = Fighter(hp=16, defense=1, power=4, 
+                                                death_function=monster_death)
+                    ai_component = BasicMonster()
+     
+                    monster = Object(x, y, 'T', 'troll', libtcod.darker_green,
+                        blocks=True, fighter=fighter_component, ai=ai_component)
+    
+     
+                objects.append(monster)
+    
+        #choose random number of items
+        num_items = libtcod.random_get_int(0, 0, MAX_ROOM_ITEMS)
+     
+        for i in range(num_items):
+            #choose random spot for this item
+            x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
+            y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
+     
+            #only place it if the tile is not blocked
+            if not is_blocked(x, y):
+                dice = libtcod.random_get_int(0, 0, 100)
+                if dice < 70:
+                    #create a healing potion (70% chance)
+                    item_component = Item(use_function=cast_heal)
+     
+                    item = Object(x, y, '!', 'healing potion', libtcod.violet, 
+                                  item=item_component)
+                    #print "Placed healing potion at ", str(x), ", ", str(y)
+                elif dice < 70+10:
+                    #create a lightning bolt scroll (10% chance)
+                    item_component = Item(use_function=cast_lightning)
+     
+                    item = Object(x, y, '?', 'scroll of lightning bolt', libtcod.light_yellow, item=item_component)
                 
-                #create an orc
-                fighter_component = Fighter(hp=10, defense=0, power=3, 
-                                            death_function=monster_death)
-                ai_component = BasicMonster()
- 
-                monster = Object(x, y, 'o', 'orc', libtcod.desaturated_green,
-                    blocks=True, fighter=fighter_component, ai=ai_component)
-            else:
-                #create a troll
-                fighter_component = Fighter(hp=16, defense=1, power=4, 
-                                            death_function=monster_death)
-                ai_component = BasicMonster()
- 
-                monster = Object(x, y, 'T', 'troll', libtcod.darker_green,
-                    blocks=True, fighter=fighter_component, ai=ai_component)
-
- 
-            objects.append(monster)
-
-    #choose random number of items
-    num_items = libtcod.random_get_int(0, 0, MAX_ROOM_ITEMS)
- 
-    for i in range(num_items):
-        #choose random spot for this item
-        x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
-        y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
- 
-        #only place it if the tile is not blocked
-        if not is_blocked(x, y):
-            dice = libtcod.random_get_int(0, 0, 100)
-            if dice < 70:
-                #create a healing potion (70% chance)
-                item_component = Item(use_function=cast_heal)
- 
-                item = Object(x, y, '!', 'healing potion', libtcod.violet, 
-                              item=item_component)
-                #print "Placed healing potion at ", str(x), ", ", str(y)
-            elif dice < 70+10:
-                #create a lightning bolt scroll (10% chance)
-                item_component = Item(use_function=cast_lightning)
- 
-                item = Object(x, y, '?', 'scroll of lightning bolt', libtcod.light_yellow, item=item_component)
-            
-            elif dice < 70+10+10:
-                #create a fireball scroll (10% chance)
-                item_component = Item(use_function=cast_fireball)
- 
-                item = Object(x, y, '#', 'scroll of fireball', libtcod.light_yellow, item=item_component)
-            
-            else:
-                #create a confuse scroll (10% chance)
-                item_component = Item(use_function=cast_confuse)
- 
-                item = Object(x, y, '?', 'scroll of confusion', libtcod.light_yellow, item=item_component)
-
-            objects.append(item)
+                elif dice < 70+10+10:
+                    #create a fireball scroll (10% chance)
+                    item_component = Item(use_function=cast_fireball)
+     
+                    item = Object(x, y, '#', 'scroll of fireball', libtcod.light_yellow, item=item_component)
+                
+                else:
+                    #create a confuse scroll (10% chance)
+                    item_component = Item(use_function=cast_confuse)
+     
+                    item = Object(x, y, '?', 'scroll of confusion', libtcod.light_yellow, item=item_component)
+    
+                objects.append(item)
 
 def target_tile(max_range=None):
     #return the position of a tile left-clicked in player's FOV (optionally in a range), or (None,None) if right-clicked.
@@ -283,7 +274,7 @@ def closest_monster(max_range):
     return closest_enemy
 
 def main():
-        make_map()
+        map = Map(40, 40)
 
 if __name__ == '__main__':
         main()
