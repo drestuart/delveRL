@@ -5,6 +5,21 @@ from menu import *
 
 INVENTORY_WIDTH = 50
 
+class ItemInventory():
+    # A list of items, with some organization logic and the ability to choose an item out of a menu.
+    def __init__(self):
+        self.items = []  # This will probably be a dict at some point
+        
+    def __len__(self):
+        return len(self.items)
+    
+    def add(self, item):
+        self.items.append(item)
+        
+    def __getitem__(self, ind):
+        return self.items[ind]
+        
+        
 # The inventory menu
 def inventory_menu(header):
     #show a menu with each item of the inventory as an option
