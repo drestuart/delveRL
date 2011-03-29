@@ -7,31 +7,19 @@ class Object:
     #this is a generic object: the player, a monster, an item, the
     #stairs...  it's always represented by a character on screen.
     def __init__(self, x, y, char, name, color, 
-                 blocks=False, fighter=None, ai=None,
-                 item=None):
-
-        self.name = name
-        self.blocks = blocks
+                 blocks_sight=False, blocks_move=False):
 
         self.x = x
         self.y = y
         self.char = char
+        self.name = name
         self.color = color
- 
-        self.fighter = fighter
-        if self.fighter:  #let the fighter component know who owns it
-            self.fighter.owner = self
- 
-        self.ai = ai
-        if self.ai:  #let the AI component know who owns it
-            self.ai.owner = self
-
-        self.item = item
-        if self.item:  #let the Item component know who owns it
-            self.item.owner = self
+        self.blocks_sight = blocks_sight
+        self.blocks_move = blocks_move
             
     def distance(self, x, y):
-        #return the distance to some coordinates
+        # Return the distance to some coordinates.  For now we're using the
+        # Euclidean distance, but maybe switch to A* distance later?
         return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
 
 
@@ -42,40 +30,40 @@ class Object:
             self.x += dx
             self.y += dy
 
-    def send_to_back(self):
-        #make this object be drawn first, so all others appear above
-        #it if they're in the same tile.
-        global objects
-        objects.remove(self)
-        objects.insert(0, self)
+#    def send_to_back(self):
+#        #make this object be drawn first, so all others appear above
+#        #it if they're in the same tile.
+#        global objects
+#        objects.remove(self)
+#        objects.insert(0, self)
 
  
-    def draw(self):
-        # If we can see the object:
-        if libtcod.map_is_in_fov(fov_map, self.x, self.y):
-
-            #set the color and then draw the character that represents
-            #this object at its position
-            libtcod.console_set_foreground_color(con, self.color)
-            libtcod.console_put_char(con, self.x, self.y, 
-                                     self.char, #self.color, 
-                                     libtcod.BKGND_NONE)
-
-
-        else:
-            # If we've seen the item, but it's out of view now
-            if map[self.x][self.y].explored:
-                libtcod.console_set_foreground_color(con, libtcod.dark_grey)
-                libtcod.console_put_char_ex(con, self.x, self.y, 
-                                            self.char, libtcod.dark_grey, 
-                                         #libtcod.BKGND_NONE)
-                                            libtcod.dark_blue)
- 
-    def clear(self):
-        #erase the character that represents this object
-        if libtcod.map_is_in_fov(fov_map, self.x, self.y):
-            libtcod.console_put_char_ex(con, self.x, self.y, '.', 
-                                        libtcod.white, libtcod.dark_blue)
+#    def draw(self):
+#        # If we can see the object:
+#        if libtcod.map_is_in_fov(fov_map, self.x, self.y):
+#
+#            #set the color and then draw the character that represents
+#            #this object at its position
+#            libtcod.console_set_foreground_color(con, self.color)
+#            libtcod.console_put_char(con, self.x, self.y, 
+#                                     self.char, #self.color, 
+#                                     libtcod.BKGND_NONE)
+#
+#
+#        else:
+#            # If we've seen the item, but it's out of view now
+#            if map[self.x][self.y].explored:
+#                libtcod.console_set_foreground_color(con, libtcod.dark_grey)
+#                libtcod.console_put_char_ex(con, self.x, self.y, 
+#                                            self.char, libtcod.dark_grey, 
+#                                         #libtcod.BKGND_NONE)
+#                                            libtcod.dark_blue)
+# 
+#    def clear(self):
+#        #erase the character that represents this object
+#        if libtcod.map_is_in_fov(fov_map, self.x, self.y):
+#            libtcod.console_put_char_ex(con, self.x, self.y, '.', 
+#                                        libtcod.white, libtcod.dark_blue)
 
     def move_towards(self, target_x, target_y):
         #vector from this object to the target, and distance

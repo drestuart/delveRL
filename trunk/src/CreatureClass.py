@@ -1,27 +1,12 @@
 # External imports
 import libtcodpy as libtcod
 
-# Basic Monster class
-class BasicMonster:
-    #AI for a basic monster.
-    def take_turn(self):
-        #a basic monster takes its turn. If you can see it, it can see you
-        monster = self.owner
-        if libtcod.map_is_in_fov(fov_map, monster.x, monster.y):
- 
-            #move towards player if far away
-            if monster.distance_to(player) >= 2:
-                monster.move_towards(player.x, player.y)
- 
-            #close enough, attack! (if the player is still alive.)
-            elif player.fighter.hp > 0:
-                monster.fighter.attack(player)
 
-
-# The Fighter class: Anything that fights!
-class Fighter:
+class Creature:
     #combat-related properties and methods (monster, player, NPC).
-    def __init__(self, hp, defense, power, death_function=None):
+    def __init__(self, hp, stats = (10, 10, 10), alignment =
+    Alignment("N"), energy = 100, move_cost = 100, attack_cost = 100, ai =
+    NormalMonster(), inventory = None, death_function=None):
         self.death_function = death_function
         self.max_hp = hp
         self.hp = hp
@@ -56,6 +41,7 @@ class Fighter:
         else:
             message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!')
 
+
 class ConfusedMonster:
     #AI for a temporarily confused monster (reverts to previous AI
     #after a while).
@@ -81,3 +67,18 @@ class ConfusedMonster:
                     libtcod.red)
 
 
+# Normal Monster class
+class NormalMonster:
+    #AI for a basic monster.
+    def take_turn(self):
+        #a basic monster takes its turn. If you can see it, it can see you
+        monster = self.owner
+        if libtcod.map_is_in_fov(fov_map, monster.x, monster.y):
+ 
+            #move towards player if far away
+            if monster.distance_to(player) >= 2:
+                monster.move_towards(player.x, player.y)
+ 
+            #close enough, attack! (if the player is still alive.)
+            elif player.fighter.hp > 0:
+                monster.fighter.attack(player)
