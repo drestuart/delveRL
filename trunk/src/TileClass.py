@@ -18,7 +18,7 @@ color_light_ground = libtcod.Color(200, 180, 50)
 class Tile:
     #a tile of the map and its properties
     def __init__(self, x = 0, y = 0, block_move = False, block_sight = False, base_symbol = '.', 
-                 base_color = color_light_ground, background = libtcod.BKGND_NONE, 
+                 base_color = color_light_ground, base_background = libtcod.BKGND_NONE, 
                  feature = None, base_description = "floor"):
         
         self.x = x
@@ -28,7 +28,7 @@ class Tile:
         self.base_symbol = base_symbol
         self.base_color = base_color
         self.base_description = base_description
-        self.background = background
+        self.base_background = base_background
         
         self.objects = ItemInventory()      # The objects on this tile 
         self.creature = None   #The creature on this tile.  The ONE creature, by the way.
@@ -38,7 +38,7 @@ class Tile:
     def toDraw(self):
         # Returns a tuple of the tile's symbol, color, and background for the
         # drawing functionality
-        return self.symbol(), self.color, self.background
+        return self.symbol(), self.color(), self.background()
     
     def blocks_move(self):
          # Determine whether creatures can see through this square.
@@ -125,6 +125,17 @@ class Tile:
         
         else:
             return self.base_color        
+
+    def background(self):
+        # Determine which background to use to draw this tile
+        if self.creature and self.creature.is_visible():
+            return self.creature.background
+        
+        elif self.feature and self.feature.is_visible():
+            return self.feature.background
+                
+        else:
+            return self.base_background   
 
     def description(self):
         # Determine which description to use to draw this tile
