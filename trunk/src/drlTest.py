@@ -2,6 +2,7 @@
 
 import libtcodpy as libtcod
 from TileClass import *
+from MapClass import *
 import os
 
 def handle_keys():
@@ -29,30 +30,16 @@ libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'python/libtcod tutorial'
 libtcod.sys_set_fps(LIMIT_FPS)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+map = Map(MAP_WIDTH, MAP_HEIGHT)
 
-class fakeCreature:
-    symbol = '&'
-    color = libtcod.green
-    is_visible = (lambda x: True) 
-    
-class fakeObject:
-    symbol = '('
-    color = libtcod.red
-    
-#cr = fakeCreature()
-ob = fakeObject()
-
-testTile = Tile(x = SCREEN_WIDTH/2, y = SCREEN_HEIGHT/2, base_symbol = '.') 
-#testTile.add_creature(cr)
-testTile.add_object(ob)
 
  
 while not libtcod.console_is_window_closed():
  
-    testTile.draw(con)
+    map.draw(con)
     libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
     libtcod.console_flush()
-    testTile.clear(con)
+    map.clear(con)
     
     if handle_keys():
         break
