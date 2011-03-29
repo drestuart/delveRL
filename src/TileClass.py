@@ -151,16 +151,16 @@ class Tile:
         else:
             return self.base_description   
     
-    # drawing management stuff. will be moved to the console class?    
-    def draw(self, con):
-        #set the color and then draw the character that represents this object
-        #at its position
-        libtcod.console_set_foreground_color(con, self.color())
-        libtcod.console_put_char(con, self.x, self.y, self.symbol(), self.background)
- 
-    def clear(self, con):
-        #erase the character that represents this object
-        libtcod.console_put_char(con, self.x, self.y, ' ', libtcod.BKGND_NONE)
+#    # drawing management stuff. will be moved to the console class?    
+#    def draw(self, con):
+#        #set the color and then draw the character that represents this object
+#        #at its position
+#        libtcod.console_set_foreground_color(con, self.color())
+#        libtcod.console_put_char(con, self.x, self.y, self.symbol(), self.background)
+# 
+#    def clear(self, con):
+#        #erase the character that represents this object
+#        libtcod.console_put_char(con, self.x, self.y, ' ', libtcod.BKGND_NONE)
         
         
         
