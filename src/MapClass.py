@@ -24,7 +24,7 @@ fov_recompute = True
 
 # Map dimensions
 MAP_WIDTH = 80
-MAP_HEIGHT = 43
+MAP_HEIGHT = 50
 
 # Some dungeon generation constants
 ROOM_MAX_SIZE = 10
@@ -70,6 +70,7 @@ class Map:
         rooms = []
         num_rooms = 0
      
+        # Make some rooms
         for r in range(MAX_ROOMS):
             #random width and height
             w = libtcod.random_get_int(0, ROOM_MIN_SIZE, ROOM_MAX_SIZE)
@@ -224,6 +225,37 @@ class Map:
                     item = Object(x, y, '?', 'scroll of confusion', libtcod.light_yellow, item=item_component)
     
                 objects.append(item)
+                
+    # Draw that map!
+    def draw(self, con):
+#        libtcod.console_set_foreground_color(con, self.color())
+#        libtcod.console_put_char(con, self.x, self.y, self.symbol(), self.background())
+
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                symbol, color, background = self.tiles[x][y].toDraw()
+                libtcod.console_set_foreground_color(con, color)
+                libtcod.console_put_char(con, x, y, symbol, background)
+                
+    # Erase that map!
+    def clear(self, con):
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                libtcod.console_put_char(con, x, y, ' ', libtcod.BKGND_NONE)
+                
+                
+def main():
+        map = Map(40, 40)
+
+if __name__ == '__main__':
+        main()
+                
+                
+#####################################################
+#
+# Old functions!
+#
+#####################################################
 
 def target_tile(max_range=None):
     #return the position of a tile left-clicked in player's FOV (optionally in a range), or (None,None) if right-clicked.
@@ -273,8 +305,3 @@ def closest_monster(max_range):
                 closest_dist = dist
     return closest_enemy
 
-def main():
-        map = Map(40, 40)
-
-if __name__ == '__main__':
-        main()
