@@ -1,6 +1,8 @@
 # The Aligment class.  Used to keep track of the ethical and moral axes that
 # underpin the theological workings of the world.
 
+import random
+
 ethical = ("L", "C")
 moral = ("G", "E")
 
@@ -21,6 +23,10 @@ distanceTable = alDistanceTable()
 
 class AlignComponent:
     def __init__(self, align, type = None):
+        
+        # Capitalize    
+        align = align.upper()
+        
         if (align in ethical):
             self.align = align
             self.type = "ethical"
@@ -45,10 +51,15 @@ class AlignComponent:
         
 
 class Alignment:
-    # Initialize the alignment object with a string, and optionally a starting
-    # piety level, and a bool to indicate whether this is a static alignment
-    # (for monsters) or should update itself (for players)
+
     def __init__(self, align, piety = 10, updates = False):
+        '''Initialize the alignment object with a string, and optionally a starting
+        piety level, and a bool to indicate whether this is a static alignment
+        (for monsters) or should update itself (for players)'''
+        
+        # Capitalize
+        align = align.upper()
+        
         if (not align.__class__ is str) or (len(align) not in (1,2)):
             raise ValueError("invalid alignment specified: " + align)
         elif len(align) == 2:
@@ -60,6 +71,7 @@ class Alignment:
                 ac1, ac2 = AlignComponent(align[0]), AlignComponent(align[1], 'moral')
             else:            
                 ac1, ac2 = AlignComponent(align[0]), AlignComponent(align[1])
+                
         elif len(align) == 1:
             if align == "N":
                 ac1 = AlignComponent(align, 'ethical')
@@ -99,22 +111,103 @@ class Alignment:
 def alDistance(al1, al2):
     return al1.distance(al2)
 
-def main():
-    print Alignment("N")
-    print Alignment("G")
-    print Alignment("E")
-    print Alignment("L")
-    print Alignment("C")
+def randAlign_OneAxis():
+    '''Return a random alignment from NG, NE, N, LN, CN, for altar purposes'''
+    ACs = ("G", "E", "N", "L", "C")
+    randAC = random.choice(ACs)
+    return Alignment(randAC)
+
+def randAlign():
+    '''Return a random two-component alignment.  Augment this later for weighting'''
+    ethical = random.choice( ("L", "N", "C") )
+    moral = random.choice( ("G", "N", "E") )
+    return Alignment(ethical + moral)
+
+# Based on Kevin Parks's recipe at http://code.activestate.com/recipes/117241/
+
+def w_choice(lst):
+    n = random.uniform(0, 1)
+    for item, weight in lst:
+        if n < weight:
+            break
+        n = n - weight
+    return item
+
+def wRandAlign(alList):
+    '''Uses the w_choice function to return a random alignment from a weighted list'''
     
-    print Alignment("LG")
-    print Alignment("LN")
-    print Alignment("LE")
-    print Alignment("NG")
-    print Alignment("NN")
-    print Alignment("NE")  
-    print Alignment("CG")
-    print Alignment("CN")
-    print Alignment("CE")        
+    # Error check: run through list and make sure that all elements are well-
+    # formed.  Inelegant, inefficient, etc, but whatev.
+    for al, weight in alList:
+        Alignment(al)
+    
+    alChoice = w_choice(alList)
+    return Alignment(alChoice)
+
+def randEvil():
+    '''Returns a random evil alignment'''
+    return wRandAlign([ ("LE", .25),
+                        ("NE", .5),
+                        ("CE", .25) ])
+    
+def randGood():
+    '''Returns a random good alignment'''
+    return wRandAlign([ ("LG", .25),
+                        ("NG", .5),
+                        ("CG", .25) ])
+
+def randLaw():
+    '''Returns a random lawful alignment'''
+    return wRandAlign([ ("LG", .25),
+                        ("LN", .5),
+                        ("LE", .25) ])
+
+def randChaos():
+    '''Returns a random lawful alignment'''
+    return wRandAlign([ ("CG", .25),
+                        ("CN", .5),
+                        ("CE", .25)  ])
+    
+def randNeutral():
+    '''Returns a random neutral alignment'''
+    return wRandAlign([ ("NG", .15),
+                        ("N", .4),
+                        ("NE", .15),
+                        ("LN", .15),
+                        ("CN", .15) ])   
+
+def main():
+#    aligns = [ Alignment("N"),
+#              Alignment("G"),
+#              Alignment("E"),
+#              Alignment("L"),
+#              Alignment("C"),
+#              Alignment("LG"),
+#              Alignment("LN"),
+#              Alignment("LE"),
+#              Alignment("NG"),
+#              Alignment("NN"),
+#              Alignment("NE"), 
+#              Alignment("CG"),
+#              Alignment("CN"),
+#              Alignment("CE")]      
+#    
+#    for a1 in aligns:
+#        for a2 in aligns:
+#            print a1, a2, alDistance(a1, a2) 
+#            
+#    print randAlign()
+#    print randAlign_OneAxis()
+#
+    print Alignment("Cn") 
+#    
+#    print randGood()
+#    print randEvil()
+#    print randLaw()
+#    print randChaos() 
+#    print randNeutral()
+    
+    
     
 
 
