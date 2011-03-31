@@ -82,3 +82,10 @@ class Object:
         dx = other.x - self.x
         dy = other.y - self.y
         return math.sqrt(dx ** 2 + dy ** 2)
+    
+    def passTime(self, turns = 1):
+        '''Pass some time on the object.  Does nothing by default.  Will override in subclasses'''
+        pass
+        
+        
+        

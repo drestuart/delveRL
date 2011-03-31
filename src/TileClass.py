@@ -95,8 +95,16 @@ class Tile:
     def add_creature(self, creature):
         if not (self.block_move and self.creature):
             self.creature = creature
-
-
+            
+    def passTime(self, turns = 1):
+        '''Pass some time on the objects and creature on this tile'''
+        for obj in self.objects:
+            obj.passTime(turns)
+            
+        if self.creature is not None:
+            self.creature.passTime(turns)
+        
+        
     # Some functions that show what's in the Tile        
     def symbol(self):
         # Determine which symbol to use to draw this tile
