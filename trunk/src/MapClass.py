@@ -3,10 +3,12 @@
 # showing what they know/remember about the level.
 
 # External imports
+import random
 import libtcodpy as libtcod
 
 # Internal imports
 from TileClass import *
+from CreatureClass import *
 
 
 
@@ -67,6 +69,7 @@ class Map:
                              for y in range(self.HEIGHT) ]
                              for x in range(self.WIDTH) ]
         
+    def create_rooms(self):
         rooms = []
         num_rooms = 0
      
@@ -148,7 +151,8 @@ class Map:
     # Test if a square is blocked
     def is_blocked(self, x, y):
         return self.tiles[x][y].blocks_move()
-        
+    
+
 
 
     # Add some monsters! Rawr!
@@ -233,16 +237,38 @@ class Map:
 
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
-                symbol, color, background = self.tiles[x][y].toDraw()
-                libtcod.console_set_foreground_color(con, color)
-                libtcod.console_put_char(con, x, y, symbol, background)
-                
+                try:
+                    symbol, color, background = self.tiles[x][y].toDraw()
+                    libtcod.console_set_foreground_color(con, color)
+                    libtcod.console_put_char(con, x, y, symbol, background)
+                except:
+                    print symbol, color, background
+                    
+                    
     # Erase that map!
     def clear(self, con):
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
                 libtcod.console_put_char(con, x, y, ' ', libtcod.BKGND_NONE)
                 
+    def getOpenSpace(self):
+        '''Get a random open square on the map'''
+        while True:
+            randx = random.choice( range(self.WIDTH) )
+            randy = random.choice( range(self.HEIGHT) )
+        
+            if not self.tiles[randx][randy].blocks_move():
+                return randx, randy
+            
+    def placeCreature(self, creature):
+        x, y = self.getOpenSpace() 
+        
+        if not self.tiles[x][y].creature:
+            self.tiles[x][y].creature = creature
+            
+    def place_creatures(self, num_creatures):
+        for i in range(num_creatures):
+            self.placeCreature(randomCreature())
                 
 def main():
         map = Map(40, 40)

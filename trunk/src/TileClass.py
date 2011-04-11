@@ -109,13 +109,13 @@ class Tile:
     def symbol(self):
         # Determine which symbol to use to draw this tile
         if self.creature and self.creature.is_visible():
-            return self.creature.symbol
+            return self.creature.symbol()
         
         elif self.feature and self.feature.is_visible():
-            return self.feature.symbol
+            return self.feature.symbol()
         
         elif self.objects:
-            return self.objects[0].symbol
+            return self.objects[0].symbol()
         
         else:
             return self.base_symbol
@@ -123,13 +123,13 @@ class Tile:
     def color(self):
         # Determine which color to use to draw this tile
         if self.creature and self.creature.is_visible():
-            return self.creature.color
+            return self.creature.color()
         
         elif self.feature and self.feature.is_visible():
-            return self.feature.color
+            return self.feature.color()
         
         elif self.objects:
-            return self.objects[0].color
+            return self.objects[0].color()
         
         else:
             return self.base_color        
@@ -137,10 +137,10 @@ class Tile:
     def background(self):
         # Determine which background to use to draw this tile
         if self.creature and self.creature.is_visible():
-            return self.creature.background
+            return self.creature.background()
         
         elif self.feature and self.feature.is_visible():
-            return self.feature.background
+            return self.feature.background()
                 
         else:
             return self.base_background   

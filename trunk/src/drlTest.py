@@ -31,7 +31,8 @@ libtcod.sys_set_fps(LIMIT_FPS)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 map = Map(MAP_WIDTH, MAP_HEIGHT)
-
+map.create_rooms()
+map.place_creatures(10)
 
  
 while not libtcod.console_is_window_closed():
