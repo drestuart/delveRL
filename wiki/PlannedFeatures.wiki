@@ -64,7 +64,9 @@ Slower movement, but better stealth.  How much better?  20%?  Should probably sc
 
 Monsters will have a "genus" and a "species" attribute.  Genus will be something general like "dragon", "canine", or "orc", and the species will be the specific creature type, like "red dragon", "war dog", or "orc warlock".
 
-= Damage Types =
+= Weapons =
+
+== Damage Types ==
 
   * Physical (all partially resistable, and reduced by AC)
     * Bludgeoning
@@ -78,6 +80,26 @@ Monsters will have a "genus" and a "species" attribute.  Genus will be something
   * Negative
 
 Resistances and vulnerabilities are independent (from gear) for characters, probably not for creatures.
+
+== Weapon Skills ==
+
+Weapons will be divided into somewhat sensible categories.
+
+High skill in certain kinds of weapons will provide some bonus abilities while using a weapon of the correct type.  These will be thematic combat enhancements that can be active or passive.
+
+|| *Skill* || *Examples* || *First Special* || *Second Special* ||
+|| *Light Blades* || Dagger, rapier, short sword || Parry (block chance depending on relative weapon weight, passive) || Riposte (Chance for free attack on parry, passive) ||
+|| *Heavy Blades* || Long sword, greatsword ||  || Disarm (active) ||
+|| *Maces* || Club, mace || || Crush (increased critical chance, passive) ||
+|| *Staves* || Quarterstaff, longstaff || St. George Guard (EV increase, passive) || Trip (active) ||
+|| *Polearms* || Spear, glaive, et al ||  || ||
+|| *Bows* || Short bow, long bow, great bow || Long shot (range increase, passive) || Fast shot (decreased energy cost, passive) ||
+|| *Crossbows* || Hand crossbow, light crossbow, heavy crossbow || Quick draw (decreased energy cost, passive) || Pierce armor (reduce effective AC, passive) ||
+|| *Slings* || Sling || || ||
+|| *Thrown* || Dart, rock, javelin || || ||
+|| *Unarmed* || Unarmed || Stunning attack (passive) || Roundhouse Kick (attack all adjacent, high energy cost, active) ||
+
+
 
 = Items =
 
@@ -113,8 +135,6 @@ It would be neat to implement different materials with different properties, lik
   * paper, for books and scrolls
   * glass, for potions and some items
   * wood, for some weapons and shields?
-
-
 
 
 
