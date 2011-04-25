@@ -69,7 +69,13 @@ class Map:
                              for y in range(self.HEIGHT) ]
                              for x in range(self.WIDTH) ]
         
+        self.tile_list = []
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                self.tile_list.append(self.tiles[x][y])
+        
     def create_rooms(self):
+        '''Add some rooms to the map'''
         rooms = []
         num_rooms = 0
      
@@ -105,12 +111,12 @@ class Map:
                 #center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
          
-                if num_rooms > 1:
+                if num_rooms >= 1:
                     #all rooms after the first:
                     #connect it to the previous room with a tunnel
      
                     #center coordinates of previous room
-                    (prev_x, prev_y) = rooms[num_rooms-1].center()
+                    (prev_x, prev_y) = rooms[-1].center()
      
                     #draw a coin (random number that is either 0 or 1)
                     if libtcod.random_get_int(0, 0, 1) == 1:
@@ -127,9 +133,14 @@ class Map:
                 rooms.append(new_room)
                 num_rooms += 1
 
+    def pass_time(self, turns = 1):
+        print "tick"
+        for i in range(turns):
+            #for tile in self.tile_list:
+            for x in range(self.WIDTH):
+                for y in range(self.HEIGHT):
+                    self.tiles[x][y].pass_time()
         
-        
-    
     # Create a room
     def create_room(self, room):
         #go through the tiles in the rectangle and make them floors
@@ -251,24 +262,28 @@ class Map:
             for y in range(self.HEIGHT):
                 libtcod.console_put_char(con, x, y, ' ', libtcod.BKGND_NONE)
                 
-    def getOpenSpace(self):
+    def getRandOpenSpace(self):
         '''Get a random open square on the map'''
         while True:
             randx = random.choice( range(self.WIDTH) )
             randy = random.choice( range(self.HEIGHT) )
         
-            if not self.tiles[randx][randy].blocks_move():
+            if not self.is_blocked(randx, randy):
                 return randx, randy
             
-    def placeCreature(self, creature):
-        x, y = self.getOpenSpace() 
+    def place_creature(self, creature):
+        while True:
+            x, y = self.getRandOpenSpace() 
         
-        if not self.tiles[x][y].creature:
-            self.tiles[x][y].creature = creature
+            if not self.tiles[x][y].creature:
+                self.tiles[x][y].creature = creature
+                creature.x = x
+                creature.y = y
+                break
             
     def place_creatures(self, num_creatures):
         for i in range(num_creatures):
-            self.placeCreature(randomCreature())
+            self.place_creature(randomCreature(self))
                 
 def main():
         map = Map(40, 40)
