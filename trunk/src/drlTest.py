@@ -3,10 +3,11 @@
 import libtcodpy as libtcod
 from TileClass import *
 from MapClass import *
+from PlayerClass import *
 import os
 
 def handle_keys():
-    key = libtcod.console_wait_for_keypress(True)  #turn-based
+    key = libtcod.console_check_for_keypress(True)  #turn-based
  
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         #Alt+Enter: toggle fullscreen
@@ -34,6 +35,8 @@ map = Map(MAP_WIDTH, MAP_HEIGHT)
 map.create_rooms()
 map.place_creatures(10)
 
+player = Player(map)
+map.place_creature(player)
  
 while not libtcod.console_is_window_closed():
  
@@ -42,9 +45,10 @@ while not libtcod.console_is_window_closed():
     libtcod.console_flush()
     map.clear(con)
     
-    if handle_keys():
-        break
-    
+    #if handle_keys():
+    #    break
+     
+    map.pass_time()
     
     
     

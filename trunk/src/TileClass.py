@@ -93,16 +93,23 @@ class Tile:
         return [remove_object(ind) for ind in indices]
     
     def add_creature(self, creature):
-        if not (self.block_move and self.creature):
+        if not self.blocks_move():
             self.creature = creature
+            return True
+        
+        else:
+            return False
             
-    def passTime(self, turns = 1):
+    def pass_time(self, turns = 1):
         '''Pass some time on the objects and creature on this tile'''
         for obj in self.objects:
-            obj.passTime(turns)
+            obj.pass_time(turns)
             
         if self.creature is not None:
-            self.creature.passTime(turns)
+            self.creature.pass_time(turns)
+            
+        if self.feature is not None:
+            self.feature.pass_time(turns)
         
         
     # Some functions that show what's in the Tile        

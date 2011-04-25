@@ -5,20 +5,50 @@ import libtcodpy as libtcod
 from AlignmentClass import *
 from AIClass import *
 
-class Creature:
+class Creature(object):
     #combat-related properties and methods (monster, player, NPC).
-    def __init__(self, hp, stats = (10, 10, 10), alignment = Alignment("N"),
-    energy = 100, move_cost = 100, attack_cost = 100, ai = NormalMonster(),
+    def __init__(self, name, hp, map, x = -1, y = -1, stats = (10, 10, 10), alignment = Alignment("N"),
+    max_energy = 100, move_cost = 100, attack_cost = 100, ai = NormalMonster(),
     inventory = None, death_function=None, base_symbol = "@", base_color = libtcod.red,
     base_background = libtcod.BKGND_NONE):
         self.death_function = death_function
         self.max_hp = hp
         self.hp = hp
+        self.name = name
+        
         self.base_symbol = base_symbol
         self.base_color = base_color
         self.base_background = base_background
+        
         self.visible = True
         
+        self.energy = max_energy
+        self.max_energy = max_energy
+        self.move_cost = move_cost
+        self.attack_cost = attack_cost
+        
+        self.map = map
+        self.x = x
+        self.y = y
+        
+    def move(self, dx, dy):
+               
+        if self.map.tiles[self.x + dx][self.y + dy].add_creature(self):
+            
+        
+            self.x += dx
+            self.y += dy
+            #self.energy -= self.move_cost
+            
+            #Remove self from the old tile
+            self.map.tiles[self.x - dx][self.y - dy].creature = None
+            
+            
+            print "Moving " + self.name + " to ", self.x, self.y
+            return True
+        
+        else:
+            return False
 
     def heal(self, amount):
         #heal by the given amount, without going over the maximum
@@ -34,11 +64,11 @@ class Creature:
                 if function is not None:
                     function(self.owner)
 
-    def passTime(self, turns = 1):
+    def pass_time(self, turns = 1):
         for i in range(turns):
-            self.takeTurn() 
+            self.take_turn() 
 
-    def takeTurn(self):
+    def take_turn(self):
         pass
     
     def is_visible(self):
@@ -65,8 +95,8 @@ class Creature:
 #        else:
 #            message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!')
 
-def randomCreature():
-    return Creature(10, base_symbol = 'o')
+def randomCreature(map):
+    return Creature(10, 'orc', map, base_symbol = 'o')
 
 def main():
     Creature(10)
