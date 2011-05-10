@@ -137,9 +137,9 @@ It would be neat to implement different materials with different properties, lik
   * wood, for some weapons and shields?
 
 
+== Shops ==
 
-
-
+Non-rob-able, Crawl-style.  The shopping list is the best feature evar.
 
 
 
