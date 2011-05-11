@@ -17,8 +17,9 @@ class Player(Creature):
         
     def take_turn(self):
         print "Waiting for player"
-        key = libtcod.console_check_for_keypress(libtcod.KEY_PRESSED)
-
+        #key = libtcod.console_check_for_keypress(libtcod.KEY_PRESSED)
+        key = libtcod.console_wait_for_keypress(libtcod.KEY_PRESSED)
+        
         if key.vk == libtcod.KEY_ENTER and libtcod.KEY_ALT:
             #Alt+Enter: toggle fullscreen
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())

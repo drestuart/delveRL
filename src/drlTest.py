@@ -9,11 +9,7 @@ import os
 def handle_keys():
     key = libtcod.console_check_for_keypress(True)  #turn-based
  
-    if key.vk == libtcod.KEY_ENTER and key.lalt:
-        #Alt+Enter: toggle fullscreen
-        libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
- 
-    elif key.vk == libtcod.KEY_ESCAPE:
+    if key.vk == libtcod.KEY_ESCAPE:
         return True  #exit game
  
  
