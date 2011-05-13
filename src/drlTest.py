@@ -6,9 +6,11 @@ from MapClass import *
 from PlayerClass import *
 import os
 
+
 def handle_keys():
-    key = libtcod.console_check_for_keypress(True)  #turn-based
- 
+    #key = libtcod.console_check_for_keypress()  #real-time
+    key = libtcod.console_wait_for_keypress(True)  #turn-based
+    
     if key.vk == libtcod.KEY_ESCAPE:
         return True  #exit game
  
