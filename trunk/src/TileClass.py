@@ -7,6 +7,7 @@ from InventoryClass import *
 
 # Constants
 
+
 # Wall and ground colors
 color_dark_wall = libtcod.Color(0, 0, 100)
 color_light_wall = libtcod.Color(130, 110, 50)
@@ -105,8 +106,8 @@ class Tile:
         for obj in self.objects:
             obj.pass_time(turns)
             
-        if self.creature is not None:
-            self.creature.pass_time(turns)
+#        if self.creature is not None:
+#            self.creature.pass_time(turns)
             
         if self.feature is not None:
             self.feature.pass_time(turns)

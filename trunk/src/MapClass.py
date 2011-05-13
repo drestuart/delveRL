@@ -135,12 +135,22 @@ class Map:
 
     def pass_time(self, turns = 1):
         print "tick"
+        
         for i in range(turns):
+            creatures = []
             #for tile in self.tile_list:
             for x in range(self.WIDTH):
                 for y in range(self.HEIGHT):
                     self.tiles[x][y].pass_time()
-        
+                    cr = self.tiles[x][y].creature
+                    
+                    if cr is not None:
+                        creatures.append(cr)
+                        
+            for cr in creatures:
+                cr.pass_time()
+                        
+                        
     # Create a room
     def create_room(self, room):
         #go through the tiles in the rectangle and make them floors

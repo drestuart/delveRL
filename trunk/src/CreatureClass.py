@@ -65,11 +65,12 @@ class Creature(object):
                     function(self.owner)
 
     def pass_time(self, turns = 1):
+        print "It is " + self.name + "'s turn"
         for i in range(turns):
             self.take_turn() 
 
     def take_turn(self):
-        pass
+        print self.name, "takes its turn"
     
     def is_visible(self):
         return self.visible
@@ -96,7 +97,7 @@ class Creature(object):
 #            message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!')
 
 def randomCreature(map):
-    return Creature(10, 'orc', map, base_symbol = 'o')
+    return Creature('orc', 10, map, base_symbol = 'o')
 
 def main():
     Creature(10)
