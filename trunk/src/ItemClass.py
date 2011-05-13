@@ -7,9 +7,9 @@ class Item:
         self.use_function = use_function
     
     #an item that can be picked up and used.
-    def pick_up(self):
+    def pickUp(self):
         #add to the player's inventory and remove from the map
-        if len(inventory) >= 26:
+        if len(inventory) >= 52:
             message('Your inventory is full, cannot pick up '
                     + self.owner.name + '.', libtcod.red)
         else:

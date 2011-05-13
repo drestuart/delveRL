@@ -8,10 +8,10 @@ from AIClass import *
 class Creature(object):
     #combat-related properties and methods (monster, player, NPC).
     def __init__(self, name, hp, map, x = -1, y = -1, stats = (10, 10, 10), alignment = Alignment("N"),
-    max_energy = 100, move_cost = 100, attack_cost = 100, ai = None,
-    inventory = None, death_function=None, base_symbol = "@", base_color = libtcod.red,
-    base_background = libtcod.BKGND_NONE):
-        self.death_function = death_function
+    maxEnergy = 100, moveCost = 100, attackCost = 100, ai = None,
+    inventory = None, deathFunction=None, baseSymbol = "@", baseColor = libtcod.red,
+    baseBackground = libtcod.BKGND_NONE):
+        self.deathFunction = deathFunction
         self.max_hp = hp
         self.hp = hp
         self.name = name
@@ -21,16 +21,16 @@ class Creature(object):
         self.ai = ai
         self.ai.setOwner(self)
         
-        self.base_symbol = base_symbol
-        self.base_color = base_color
-        self.base_background = base_background
+        self.baseSymbol = baseSymbol
+        self.baseColor = baseColor
+        self.baseBackground = baseBackground
         
         self.visible = True
         
-        self.energy = max_energy
-        self.max_energy = max_energy
-        self.move_cost = move_cost
-        self.attack_cost = attack_cost
+        self.energy = maxEnergy
+        self.maxEnergy = maxEnergy
+        self.moveCost = moveCost
+        self.attackCost = attackCost
         
         self.map = map
         self.x = x
@@ -38,14 +38,14 @@ class Creature(object):
         
     def move(self, dx, dy):
                
-        if self.map.tiles[self.x + dx][self.y + dy].add_creature(self):
+        if self.map.tiles[self.x + dx][self.y + dy].addCreature(self):
             
             #Remove self from the old tile
             self.map.tiles[self.x][self.y].creature = None
         
             self.x += dx
             self.y += dy
-            #self.energy -= self.move_cost
+            #self.energy -= self.moveCost
                         
             print self.name + " moves to", self.x, self.y
             return True
@@ -57,17 +57,17 @@ class Creature(object):
         #heal by the given amount, without going over the maximum
         self.hp = min(self.hp + amount, self.max_hp)
 
-    def take_damage(self, damage):
+    def takeDamage(self, damage):
         #apply damage if possible
         if damage > 0:
             self.hp -= damage
             #check for death. if there's a death function, call it
             if self.hp <= 0:
-                function = self.death_function
+                function = self.deathFunction
                 if function is not None:
                     function(self.owner)
 
-    def pass_time(self, turns = 1):
+    def passTime(self, turns = 1):
         print "It is " + self.name + "'s turn"
         for i in range(turns):
             self.takeTurn() 
@@ -75,18 +75,18 @@ class Creature(object):
     def takeTurn(self):
         self.ai.takeTurn()
     
-    def is_visible(self):
+    def isVisible(self):
         return self.visible
     
     def color(self):
         # There will probably be some more logic here
-        return self.base_color
+        return self.baseColor
     
     def symbol(self):
-        return self.base_symbol
+        return self.baseSymbol
     
     def background(self):
-        return self.base_background
+        return self.baseBackground
 
 #    def attack(self, target):
 #        #a simple formula for attack damage
@@ -100,7 +100,7 @@ class Creature(object):
 #            message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!')
 
 def randomCreature(map):
-    return Creature('orc', 10, map, base_symbol = 'o')
+    return Creature('orc', 10, map, baseSymbol = 'o')
 
 def main():
     Creature(10)

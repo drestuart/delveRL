@@ -7,15 +7,15 @@ class Object:
     #this is a generic object: the player, a monster, an item, the
     #stairs...  it's always represented by a character on screen.
     def __init__(self, x, y, char, name, color, 
-                 blocks_sight=False, blocks_move=False):
+                 blocksSight=False, blocksMove=False):
 
         self.x = x
         self.y = y
         self.char = char
         self.name = name
         self.color = color
-        self.blocks_sight = blocks_sight
-        self.blocks_move = blocks_move
+        self.blocksSight = blocksSight
+        self.blocksMove = blocksMove
             
     def distance(self, x, y):
         # Return the distance to some coordinates.  For now we're using the
@@ -24,7 +24,7 @@ class Object:
 
 
     def move(self, dx, dy):
-        if not is_blocked(self.x + dx, self.y + dy):
+        if not isBlocked(self.x + dx, self.y + dy):
 
             #move by the given amount
             self.x += dx
@@ -65,7 +65,7 @@ class Object:
 #            libtcod.console_put_char_ex(con, self.x, self.y, '.', 
 #                                        libtcod.white, libtcod.dark_blue)
 
-    def move_towards(self, target_x, target_y):
+    def moveTowards(self, target_x, target_y):
         #vector from this object to the target, and distance
         dx = target_x - self.x
         dy = target_y - self.y
@@ -77,7 +77,7 @@ class Object:
         dy = int(round(dy / distance))
         self.move(dx, dy)
 
-    def distance_to(self, other):
+    def distanceTo(self, other):
         #return the distance to another object
         dx = other.x - self.x
         dy = other.y - self.y
