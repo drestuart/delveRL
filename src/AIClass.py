@@ -15,7 +15,7 @@ class ConfusedMonster(AI):
         self.old_ai = old_ai
         self.num_turns = num_turns
  
-    def take_turn(self):
+    def takeTurn(self):
         if self.num_turns > 0:  #still confused...
             
             #move in a random direction, and decrease the number of

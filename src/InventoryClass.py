@@ -21,7 +21,7 @@ class ItemInventory():
         
         
 # The inventory menu
-def inventory_menu(header):
+def inventoryMenu(header):
     #show a menu with each item of the inventory as an option
     if len(inventory) == 0:
         options = ['Inventory is empty.']

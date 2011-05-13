@@ -1,3 +1,11 @@
+############################################################
+#
+# Old stuff!
+# THIS MODULE CONDEMNED
+# 
+############################################################
+
+
 # External imports
 import libtcodpy as libtcod
 import math

@@ -30,21 +30,21 @@ libtcod.sys_set_fps(LIMIT_FPS)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 map = Map(MAP_WIDTH, MAP_HEIGHT)
-map.create_rooms()
-map.place_creatures(3)
+map.createRooms()
+map.placeCreatures(3)
 
-cr1 = Creature('orc1', 10, map, base_symbol = 'o')
-cr2 = Creature('goblin2', 10, map, base_symbol = 'g')
-cr3 = Creature('giant3', 10, map, base_symbol = 'G')
-cr4 = Creature('dragon4', 10, map, base_symbol = 'D')
+cr1 = Creature('orc1', 10, map, baseSymbol = 'o')
+cr2 = Creature('goblin2', 10, map, baseSymbol = 'g')
+cr3 = Creature('giant3', 10, map, baseSymbol = 'G')
+cr4 = Creature('dragon4', 10, map, baseSymbol = 'D')
 
-map.place_creature(cr1)
-map.place_creature(cr2)
-map.place_creature(cr3)
-map.place_creature(cr4)
+map.placeCreature(cr1)
+map.placeCreature(cr2)
+map.placeCreature(cr3)
+map.placeCreature(cr4)
 
 player = Player(map)
-map.place_creature(player)
+map.placeCreature(player)
  
 while not libtcod.console_is_window_closed():
  
@@ -56,7 +56,7 @@ while not libtcod.console_is_window_closed():
     #if handle_keys():
     #    break
      
-    map.pass_time()
+    map.passTime()
     
     
     

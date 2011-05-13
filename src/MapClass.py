@@ -64,17 +64,17 @@ class Map:
 
         #fill map with "wall" tiles
 
-        self.tiles = [[ Tile(x, y, block_move = True, block_sight = True, base_symbol = '#', 
-                             base_color = color_dark_wall, base_description = 'Rock wall') 
+        self.tiles = [[ Tile(x, y, blockMove = True, blockSight = True, baseSymbol = '#', 
+                             baseColor = colorDarkWall, baseDescription = 'Rock wall') 
                              for y in range(self.HEIGHT) ]
                              for x in range(self.WIDTH) ]
         
-        self.tile_list = []
+        self.tileList = []
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
-                self.tile_list.append(self.tiles[x][y])
+                self.tileList.append(self.tiles[x][y])
         
-    def create_rooms(self):
+    def createRooms(self):
         '''Add some rooms to the map'''
         rooms = []
         num_rooms = 0
@@ -103,10 +103,10 @@ class Map:
                 #this means there are no intersections, so this room is valid
      
                 #"paint" it to the map's tiles
-                self.create_room(new_room)
+                self.createRoom(new_room)
     
                 #add some contents to this room, such as monsters
-                self.place_objects(new_room)
+                self.placeObjects(new_room)
      
                 #center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
@@ -121,19 +121,19 @@ class Map:
                     #draw a coin (random number that is either 0 or 1)
                     if libtcod.random_get_int(0, 0, 1) == 1:
                         #first move horizontally, then vertically
-                        self.create_h_tunnel(prev_x, new_x, prev_y)
-                        self.create_v_tunnel(prev_y, new_y, new_x)
+                        self.createHTunnel(prev_x, new_x, prev_y)
+                        self.createVTunnel(prev_y, new_y, new_x)
                     else:
                         #first move vertically, then horizontally
-                        self.create_v_tunnel(prev_y, new_y, prev_x)
-                        self.create_h_tunnel(prev_x, new_x, new_y)
+                        self.createVTunnel(prev_y, new_y, prev_x)
+                        self.createHTunnel(prev_x, new_x, new_y)
     
      
                 #finally, append the new room to the list
                 rooms.append(new_room)
                 num_rooms += 1
 
-    def pass_time(self, turns = 1):
+    def passTime(self, turns = 1):
         print "tick"
         
         for i in range(turns):
@@ -141,43 +141,43 @@ class Map:
             
             for x in range(self.WIDTH):
                 for y in range(self.HEIGHT):
-                    self.tiles[x][y].pass_time()
+                    self.tiles[x][y].passTime()
                     cr = self.tiles[x][y].creature
                     
                     if cr is not None:
                         creatures.append(cr)
                         
             for cr in creatures:
-                cr.pass_time()
+                cr.passTime()
                         
                         
     # Create a room
-    def create_room(self, room):
+    def createRoom(self, room):
         #go through the tiles in the rectangle and make them floors
         for x in range(room.x1 + 1, room.x2):
             for y in range(room.y1 + 1, room.y2):
                 self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
 
     # Carve out a horizontal tunnel
-    def create_h_tunnel(self, x1, x2, y):
+    def createHTunnel(self, x1, x2, y):
         for x in range(min(x1, x2), max(x1, x2) + 1):
             self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
 
     # Carve out a vertical tunnel
-    def create_v_tunnel(self, y1, y2, x):
+    def createVTunnel(self, y1, y2, x):
         for y in range(min(y1, y2), max(y1, y2) + 1):
             self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
 
 
     # Test if a square is blocked
-    def is_blocked(self, x, y):
-        return self.tiles[x][y].blocks_move()
+    def isBlocked(self, x, y):
+        return self.tiles[x][y].blocksMove()
     
 
 
 
     # Add some monsters! Rawr!
-    def place_objects(self, room):
+    def placeObjects(self, room):
         # Disable for now
         return
         #choose random number of monsters
@@ -189,7 +189,7 @@ class Map:
             y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
     
             #only place it if the tile is not blocked
-            if not is_blocked(x, y):
+            if not isBlocked(x, y):
      
                 #80% chance of getting an orc
                 if libtcod.random_get_int(0, 0, 100) < 80:  
@@ -222,7 +222,7 @@ class Map:
             y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
      
             #only place it if the tile is not blocked
-            if not is_blocked(x, y):
+            if not isBlocked(x, y):
                 dice = libtcod.random_get_int(0, 0, 100)
                 if dice < 70:
                     #create a healing potion (70% chance)
@@ -258,12 +258,12 @@ class Map:
 
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
-                try:
+                #try:
                     symbol, color, background = self.tiles[x][y].toDraw()
                     libtcod.console_set_foreground_color(con, color)
                     libtcod.console_put_char(con, x, y, symbol, background)
-                except:
-                    print symbol, color, background
+                #except:
+                #    print symbol, color, background
                     
                     
     # Erase that map!
@@ -278,10 +278,10 @@ class Map:
             randx = libtcod.random_get_int(0, 0, self.WIDTH - 1)
             randy = libtcod.random_get_int(0, 0, self.HEIGHT - 1)
         
-            if not self.is_blocked(randx, randy):
+            if not self.isBlocked(randx, randy):
                 return randx, randy
             
-    def place_creature(self, creature):
+    def placeCreature(self, creature):
         while True:
             x, y = self.getRandOpenSpace() 
         
@@ -291,9 +291,9 @@ class Map:
                 creature.y = y
                 break
             
-    def place_creatures(self, num_creatures):
+    def placeCreatures(self, num_creatures):
         for i in range(num_creatures):
-            self.place_creature(randomCreature(self))
+            self.placeCreature(randomCreature(self))
                 
 def main():
         map = Map(40, 40)
