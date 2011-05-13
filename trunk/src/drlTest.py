@@ -31,7 +31,17 @@ con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 map = Map(MAP_WIDTH, MAP_HEIGHT)
 map.create_rooms()
-map.place_creatures(10)
+map.place_creatures(3)
+
+cr1 = Creature('orc1', 10, map, base_symbol = 'o')
+cr2 = Creature('goblin2', 10, map, base_symbol = 'g')
+cr3 = Creature('giant3', 10, map, base_symbol = 'G')
+cr4 = Creature('dragon4', 10, map, base_symbol = 'D')
+
+map.place_creature(cr1)
+map.place_creature(cr2)
+map.place_creature(cr3)
+map.place_creature(cr4)
 
 player = Player(map)
 map.place_creature(player)

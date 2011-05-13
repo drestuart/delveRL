@@ -8,13 +8,18 @@ from AIClass import *
 class Creature(object):
     #combat-related properties and methods (monster, player, NPC).
     def __init__(self, name, hp, map, x = -1, y = -1, stats = (10, 10, 10), alignment = Alignment("N"),
-    max_energy = 100, move_cost = 100, attack_cost = 100, ai = NormalMonster(),
+    max_energy = 100, move_cost = 100, attack_cost = 100, ai = None,
     inventory = None, death_function=None, base_symbol = "@", base_color = libtcod.red,
     base_background = libtcod.BKGND_NONE):
         self.death_function = death_function
         self.max_hp = hp
         self.hp = hp
         self.name = name
+        
+        if ai == None:
+            ai = NormalMonsterAI()
+        self.ai = ai
+        self.ai.setOwner(self)
         
         self.base_symbol = base_symbol
         self.base_color = base_color
@@ -35,16 +40,14 @@ class Creature(object):
                
         if self.map.tiles[self.x + dx][self.y + dy].add_creature(self):
             
+            #Remove self from the old tile
+            self.map.tiles[self.x][self.y].creature = None
         
             self.x += dx
             self.y += dy
             #self.energy -= self.move_cost
-            
-            #Remove self from the old tile
-            self.map.tiles[self.x - dx][self.y - dy].creature = None
-            
-            
-            print "Moving " + self.name + " to ", self.x, self.y
+                        
+            print self.name + " moves to", self.x, self.y
             return True
         
         else:
@@ -67,10 +70,10 @@ class Creature(object):
     def pass_time(self, turns = 1):
         print "It is " + self.name + "'s turn"
         for i in range(turns):
-            self.take_turn() 
+            self.takeTurn() 
 
-    def take_turn(self):
-        print self.name, "takes its turn"
+    def takeTurn(self):
+        self.ai.takeTurn()
     
     def is_visible(self):
         return self.visible

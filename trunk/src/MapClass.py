@@ -3,7 +3,7 @@
 # showing what they know/remember about the level.
 
 # External imports
-import random
+#import random
 import libtcodpy as libtcod
 
 # Internal imports
@@ -138,7 +138,7 @@ class Map:
         
         for i in range(turns):
             creatures = []
-            #for tile in self.tile_list:
+            
             for x in range(self.WIDTH):
                 for y in range(self.HEIGHT):
                     self.tiles[x][y].pass_time()
@@ -275,8 +275,8 @@ class Map:
     def getRandOpenSpace(self):
         '''Get a random open square on the map'''
         while True:
-            randx = random.choice( range(self.WIDTH) )
-            randy = random.choice( range(self.HEIGHT) )
+            randx = libtcod.random_get_int(0, 0, self.WIDTH - 1)
+            randy = libtcod.random_get_int(0, 0, self.HEIGHT - 1)
         
             if not self.is_blocked(randx, randy):
                 return randx, randy
