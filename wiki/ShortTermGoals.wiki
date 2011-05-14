@@ -1,5 +1,7 @@
 #summary A notepad of current and near-future goals
 
-  * Reproduce the functionality of the [http://roguebasin.roguelikedevelopment.org/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod libtcod tutorial] in a more modular, object-oriented framework.
-    * Be able to print a character to the console with a specified position, color, and background.  This sounds sad, but it will be an excellent first step.  
-    * The tutorial provided a good framework, and will be a guide on algorithms etc, but cramming all the code into one file hurt my brain severely.
+  * Field of view for player, monsters
+  * AI improvements
+  * Implement attacking
+  * Implement hostility level
+  * Items and inventory
