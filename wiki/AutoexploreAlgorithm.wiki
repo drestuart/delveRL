@@ -41,6 +41,8 @@ def findNearestTile(tiles, position):
     return None, None
 
 
+  # It would be smart to start looking at the current position and spiraling outward.  Let's think about how to do that.
+
 
 def followPath(self, path):
 # Follow the given path, stopping for monsters or new items or features
