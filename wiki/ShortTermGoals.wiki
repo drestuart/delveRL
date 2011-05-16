@@ -5,3 +5,4 @@
   * Implement attacking
   * Implement hostility level
   * Items and inventory
+  * Autoexplore algorithm
