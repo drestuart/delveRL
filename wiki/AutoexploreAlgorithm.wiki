@@ -1,0 +1,75 @@
+#summary Ideas and pseudocode for the autoexplore functionality
+#labels Phase-Design
+
+One of Crawl's best features is the autoexplore function, and I'd like to replicate it / rip it off.  Here's how I might do it:
+
+{{{
+def autoexplore(self, map):
+  unexplored = map.getUnexploredTiles()
+  destination = None
+  
+  destination, path = findNearestTile(unexplored)
+
+  if destination and path:
+    player.setDestination(tile)   # Store the player's destination in
+                                  # case autoexplore needs to restart
+
+    player.followPath(path)  #def'd below.
+
+
+def findNearestTile(tiles, position):
+  # Find the closest tile to position from the tiles list
+
+  # Find the shortest path to an unexplored tile using the low-water-mark
+  # algorithm.  Is there a better way to do this?
+
+  shortestPathLength = None
+  shortestPath = None
+
+  for tile in tiles:
+    pathToTile = libtcod.astar(position, tile.position) # The libtcod A* function
+    pathLength = pathToTile.length()
+    
+    if (pathLength < shorttestPathLength) or (shortestPathLength == None):
+      shortestPathLength = pathLength
+      shortestPath = pathToTile
+
+  if shortestPath:
+    return tile, shortestPath
+
+  else:  # No tiles accessible
+    return None, None
+
+
+
+def followPath(self, path):
+# Follow the given path, stopping for monsters or new items or features
+
+  stoppedEarly = False  # Set to true if autoexplore stops early 
+
+  while shortestPath.hasNext():
+
+    if player.moveTo(shortestPath.next()): #returns true if the player hits a trap?  There will be a better way to do this
+      stoppedEarly = True
+      break
+    
+    if player.recomputeFOV(map):  #returns true is the player finds new items or features?
+      stoppedEarly = True
+      break
+
+    if player.seesMonsters():  #Stop autoexplore if the player spots a monster
+      stoppedEarly = True
+      break
+
+
+  if not stoppedEarly: # If the player reached the target
+    nextDestination, nextPath = findNearestTile(map.getUnexploredTiles(), self.position)  #def'd above.
+    player.setDestination(nextDestination)
+    player.followPath(nextPath) #Recurse
+
+  else:
+    printMessages() # Print whatever messages are appropriate
+
+}}}
+
+This will preferentially choose tiles at the beginning of the `unexplored` list, which will probably be in the northwest.  Maybe add some randomization if this feels weird?
