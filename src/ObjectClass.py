@@ -1,9 +1,11 @@
 # External imports
 import libtcodpy as libtcod
 
+from GetSetClass import *
+
 # The Object class.  How much more general can you get?
 
-class Object:
+class Object(GetSet):
     #this is a generic object: the player, a monster, an item, the
     #stairs...  it's always represented by a character on screen.
     def __init__(self, x, y, char, name, color, 

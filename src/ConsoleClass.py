@@ -1,6 +1,8 @@
 # External imports
 import libtcodpy as libtcod
 
+from GetSetClass import *
+
 # Terminal size consts
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50

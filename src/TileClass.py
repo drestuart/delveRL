@@ -4,6 +4,7 @@ import libtcodpy as libtcod
 # Internal imports
 from DungeonFeatureClass import *
 from InventoryClass import *
+from GetSetClass import *
 
 # Constants
 
@@ -16,7 +17,7 @@ colorLightGround = libtcod.Color(200, 180, 50)
 
 # The Tile class
 
-class Tile:
+class Tile(GetSet):
     #a tile of the map and its properties
     def __init__(self, x = 0, y = 0, blockMove = False, blockSight = False, baseSymbol = '.', 
                  baseColor = colorLightGround, baseBackground = libtcod.BKGND_NONE, 

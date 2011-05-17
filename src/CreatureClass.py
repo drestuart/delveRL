@@ -4,8 +4,9 @@ import libtcodpy as libtcod
 # Internal imports
 from AlignmentClass import *
 from AIClass import *
+from GetSetClass import *
 
-class Creature(object):
+class Creature(GetSet):
     #combat-related properties and methods (monster, player, NPC).
     def __init__(self, name, hp, map, x = -1, y = -1, stats = (10, 10, 10), alignment = Alignment("N"),
     maxEnergy = 100, moveCost = 100, attackCost = 100, ai = None,
