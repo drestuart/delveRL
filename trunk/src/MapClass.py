@@ -3,7 +3,7 @@
 # showing what they know/remember about the level.
 
 # External imports
-#import random
+import random
 import libtcodpy as libtcod
 
 # Internal imports
@@ -57,22 +57,24 @@ class Rect:
 class Map(GetSet):
         
     def __init__(self, width, height, name = '', depth = 0):
-        self.WIDTH = width
-        self.HEIGHT = height
-        self.name = name
-        self.depth = depth
+        self.__dict__['WIDTH'] = width
+        self.__dict__['HEIGHT'] = height
+        self.__dict__['name'] = name
+        self.__dict__['depth'] = depth
 
         #fill map with "wall" tiles
 
-        self.tiles = [[ Tile(x, y, blockMove = True, blockSight = True, baseSymbol = '#', 
+        self.__dict__['tiles'] = [[ Tile(x, y, blockMove = True, blockSight = True, baseSymbol = '#', 
                              baseColor = colorDarkWall, baseDescription = 'Rock wall') 
                              for y in range(self.HEIGHT) ]
                              for x in range(self.WIDTH) ]
         
-        self.tileList = []
+        self.__dict__['tileList'] = []
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
-                self.tileList.append(self.tiles[x][y])
+                self.__dict__['tileList'].append(self.tiles[x][y])
+                
+        self.__dict__['openSpaces'] = []
         
     def createRooms(self):
         '''Add some rooms to the map'''
@@ -151,22 +153,27 @@ class Map(GetSet):
                 cr.passTime()
                         
                         
+    def addTile(self, x, y, tile):
+        self.__dict__['tiles'][x][y] = tile
+        if not tile.blocksMove():
+            self.__dict__['openSpaces'].append(tile)
+                        
     # Create a room
     def createRoom(self, room):
         #go through the tiles in the rectangle and make them floors
         for x in range(room.x1 + 1, room.x2):
             for y in range(room.y1 + 1, room.y2):
-                self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
+                self.addTile(x, y, Tile(x, y))  # Default is a floor tile
 
     # Carve out a horizontal tunnel
     def createHTunnel(self, x1, x2, y):
         for x in range(min(x1, x2), max(x1, x2) + 1):
-            self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
+            self.addTile(x, y, Tile(x, y))  # Default is a floor tile
 
     # Carve out a vertical tunnel
     def createVTunnel(self, y1, y2, x):
         for y in range(min(y1, y2), max(y1, y2) + 1):
-            self.tiles[x][y] = Tile(x, y)  # Default is a floor tile
+            self.addTile(x, y, Tile(x, y))  # Default is a floor tile
 
 
     # Test if a square is blocked
@@ -181,75 +188,75 @@ class Map(GetSet):
         # Disable for now
         return
         #choose random number of monsters
-        num_monsters = libtcod.random_get_int(0, 0, MAX_ROOM_MONSTERS)
-     
-        for i in range(num_monsters):
-            #choose random spot for this monster
-            x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
-            y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
-    
-            #only place it if the tile is not blocked
-            if not isBlocked(x, y):
-     
-                #80% chance of getting an orc
-                if libtcod.random_get_int(0, 0, 100) < 80:  
-                    
-                    #create an orc
-                    fighter_component = Fighter(hp=10, defense=0, power=3, 
-                                                death_function=monster_death)
-                    ai_component = BasicMonster()
-     
-                    monster = Object(x, y, 'o', 'orc', libtcod.desaturated_green,
-                        blocks=True, fighter=fighter_component, ai=ai_component)
-                else:
-                    #create a troll
-                    fighter_component = Fighter(hp=16, defense=1, power=4, 
-                                                death_function=monster_death)
-                    ai_component = BasicMonster()
-     
-                    monster = Object(x, y, 'T', 'troll', libtcod.darker_green,
-                        blocks=True, fighter=fighter_component, ai=ai_component)
-    
-     
-                objects.append(monster)
-    
-        #choose random number of items
-        num_items = libtcod.random_get_int(0, 0, MAX_ROOM_ITEMS)
-     
-        for i in range(num_items):
-            #choose random spot for this item
-            x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
-            y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
-     
-            #only place it if the tile is not blocked
-            if not isBlocked(x, y):
-                dice = libtcod.random_get_int(0, 0, 100)
-                if dice < 70:
-                    #create a healing potion (70% chance)
-                    item_component = Item(use_function=cast_heal)
-     
-                    item = Object(x, y, '!', 'healing potion', libtcod.violet, 
-                                  item=item_component)
-                    #print "Placed healing potion at ", str(x), ", ", str(y)
-                elif dice < 70+10:
-                    #create a lightning bolt scroll (10% chance)
-                    item_component = Item(use_function=cast_lightning)
-     
-                    item = Object(x, y, '?', 'scroll of lightning bolt', libtcod.light_yellow, item=item_component)
-                
-                elif dice < 70+10+10:
-                    #create a fireball scroll (10% chance)
-                    item_component = Item(use_function=cast_fireball)
-     
-                    item = Object(x, y, '#', 'scroll of fireball', libtcod.light_yellow, item=item_component)
-                
-                else:
-                    #create a confuse scroll (10% chance)
-                    item_component = Item(use_function=cast_confuse)
-     
-                    item = Object(x, y, '?', 'scroll of confusion', libtcod.light_yellow, item=item_component)
-    
-                objects.append(item)
+#        num_monsters = libtcod.random_get_int(0, 0, MAX_ROOM_MONSTERS)
+#     
+#        for i in range(num_monsters):
+#            #choose random spot for this monster
+#            x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
+#            y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
+#    
+#            #only place it if the tile is not blocked
+#            if not isBlocked(x, y):
+#     
+#                #80% chance of getting an orc
+#                if libtcod.random_get_int(0, 0, 100) < 80:  
+#                    
+#                    #create an orc
+#                    fighter_component = Fighter(hp=10, defense=0, power=3, 
+#                                                death_function=monster_death)
+#                    ai_component = BasicMonster()
+#     
+#                    monster = Object(x, y, 'o', 'orc', libtcod.desaturated_green,
+#                        blocks=True, fighter=fighter_component, ai=ai_component)
+#                else:
+#                    #create a troll
+#                    fighter_component = Fighter(hp=16, defense=1, power=4, 
+#                                                death_function=monster_death)
+#                    ai_component = BasicMonster()
+#     
+#                    monster = Object(x, y, 'T', 'troll', libtcod.darker_green,
+#                        blocks=True, fighter=fighter_component, ai=ai_component)
+#    
+#     
+#                objects.append(monster)
+#    
+#        #choose random number of items
+#        num_items = libtcod.random_get_int(0, 0, MAX_ROOM_ITEMS)
+#     
+#        for i in range(num_items):
+#            #choose random spot for this item
+#            x = libtcod.random_get_int(0, room.x1+1, room.x2-1)
+#            y = libtcod.random_get_int(0, room.y1+1, room.y2-1)
+#     
+#            #only place it if the tile is not blocked
+#            if not isBlocked(x, y):
+#                dice = libtcod.random_get_int(0, 0, 100)
+#                if dice < 70:
+#                    #create a healing potion (70% chance)
+#                    item_component = Item(use_function=cast_heal)
+#     
+#                    item = Object(x, y, '!', 'healing potion', libtcod.violet, 
+#                                  item=item_component)
+#                    #print "Placed healing potion at ", str(x), ", ", str(y)
+#                elif dice < 70+10:
+#                    #create a lightning bolt scroll (10% chance)
+#                    item_component = Item(use_function=cast_lightning)
+#     
+#                    item = Object(x, y, '?', 'scroll of lightning bolt', libtcod.light_yellow, item=item_component)
+#                
+#                elif dice < 70+10+10:
+#                    #create a fireball scroll (10% chance)
+#                    item_component = Item(use_function=cast_fireball)
+#     
+#                    item = Object(x, y, '#', 'scroll of fireball', libtcod.light_yellow, item=item_component)
+#                
+#                else:
+#                    #create a confuse scroll (10% chance)
+#                    item_component = Item(use_function=cast_confuse)
+#     
+#                    item = Object(x, y, '?', 'scroll of confusion', libtcod.light_yellow, item=item_component)
+#    
+#                objects.append(item)
                 
     # Draw that map!
     def draw(self, con):
@@ -280,15 +287,23 @@ class Map(GetSet):
         
             if not self.isBlocked(randx, randy):
                 return randx, randy
+                
+    def getRandOpenSpace_NEW(self):
+        '''Get a random open square on the map'''
+        if self.openSpaces:
+            randOpenTile = random.choice(self.openSpaces)
+            return randOpenTile.x, randOpenTile.y
+        
+        else:
+            return None, None
             
     def placeCreature(self, creature):
         while True:
             x, y = self.getRandOpenSpace() 
         
             if not self.tiles[x][y].creature:
-                self.tiles[x][y].creature = creature
-                creature.x = x
-                creature.y = y
+                self.tiles[x][y].addCreature(creature)
+                creature.setPosition(self, x, y)
                 break
             
     def placeCreatures(self, num_creatures):
