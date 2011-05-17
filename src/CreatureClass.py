@@ -12,40 +12,40 @@ class Creature(GetSet):
     maxEnergy = 100, moveCost = 100, attackCost = 100, ai = None,
     inventory = None, deathFunction=None, baseSymbol = "@", baseColor = libtcod.red,
     baseBackground = libtcod.BKGND_NONE):
-        self.deathFunction = deathFunction
-        self.max_hp = hp
-        self.hp = hp
-        self.name = name
+        self.__dict__['deathFunction'] = deathFunction
+        self.__dict__['max_hp'] = hp
+        self.__dict__['hp'] = hp
+        self.__dict__['name'] = name
         
         if ai == None:
             ai = NormalMonsterAI()
-        self.ai = ai
+        self.__dict__['ai'] = ai
         self.ai.setOwner(self)
         
-        self.baseSymbol = baseSymbol
-        self.baseColor = baseColor
-        self.baseBackground = baseBackground
+        self.__dict__['baseSymbol'] = baseSymbol
+        self.__dict__['baseColor'] = baseColor
+        self.__dict__['baseBackground'] = baseBackground
         
-        self.visible = True
+        self.__dict__['visible'] = True
         
-        self.energy = maxEnergy
-        self.maxEnergy = maxEnergy
-        self.moveCost = moveCost
-        self.attackCost = attackCost
+        self.__dict__['energy'] = maxEnergy
+        self.__dict__['maxEnergy'] = maxEnergy
+        self.__dict__['moveCost'] = moveCost
+        self.__dict__['attackCost'] = attackCost
         
-        self.map = map
-        self.x = x
-        self.y = y
+        self.__dict__['map'] = map
+        self.__dict__['x'] = x
+        self.__dict__['y'] = y
         
     def move(self, dx, dy):
                
         if self.map.tiles[self.x + dx][self.y + dy].addCreature(self):
             
             #Remove self from the old tile
-            self.map.tiles[self.x][self.y].creature = None
+            self.map.tiles[self.x][self.y].removeCreature()
         
-            self.x += dx
-            self.y += dy
+            self.__dict__['x'] += dx
+            self.__dict__['y'] += dy
             #self.energy -= self.moveCost
                         
             print self.name + " moves to", self.x, self.y
@@ -53,21 +53,21 @@ class Creature(GetSet):
         
         else:
             return False
+        
+    def changeHP(self, amount):
+        self.__dict__['hp'] = min(self.hp + amount, self.max_hp)
+        if self.hp <= 0:
+            self.deathFunction(self)
 
     def heal(self, amount):
-        #heal by the given amount, without going over the maximum
-        self.hp = min(self.hp + amount, self.max_hp)
+        #heal by the given amount
+        self.changeHP(amount)
 
     def takeDamage(self, damage):
         #apply damage if possible
         if damage > 0:
-            self.hp -= damage
-            #check for death. if there's a death function, call it
-            if self.hp <= 0:
-                function = self.deathFunction
-                if function is not None:
-                    function(self.owner)
-
+            self.changeHP(-damage)
+            
     def passTime(self, turns = 1):
         print "It is " + self.name + "'s turn"
         for i in range(turns):

@@ -23,19 +23,19 @@ class Tile(GetSet):
                  baseColor = colorLightGround, baseBackground = libtcod.BKGND_NONE, 
                  feature = None, baseDescription = "floor"):
         
-        self.x = x
-        self.y = y
-        self.blockMove = blockMove
-        self.blockSight = blockSight
-        self.baseSymbol = baseSymbol
-        self.baseColor = baseColor
-        self.baseDescription = baseDescription
-        self.baseBackground = baseBackground
+        self.__dict__['x'] = x
+        self.__dict__['y'] = y
+        self.__dict__['blockMove'] = blockMove
+        self.__dict__['blockSight'] = blockSight
+        self.__dict__['baseSymbol'] = baseSymbol
+        self.__dict__['baseColor'] = baseColor
+        self.__dict__['baseDescription'] = baseDescription
+        self.__dict__['baseBackground'] = baseBackground
         
-        self.objects = ItemInventory()      # The objects on this tile 
-        self.creature = None   #The creature on this tile.  The ONE creature, by the way.
+        self.__dict__['objects'] = ItemInventory()      # The objects on this tile 
+        self.__dict__['creature'] = None   #The creature on this tile.  The ONE creature, by the way.
         
-        self.feature = feature
+        self.__dict__['feature'] = feature
             
     def toDraw(self):
         # Returns a tuple of the tile's symbol, color, and background for the
@@ -95,8 +95,16 @@ class Tile(GetSet):
         return [removeObject(ind) for ind in indices]
     
     def addCreature(self, creature):
-        if not self.blocksMove():
-            self.creature = creature
+        if (not self.blocksMove()) and (not self.creature):
+            self.__dict__['creature'] = creature
+            return True
+        
+        else:
+            return False
+        
+    def removeCreature(self):
+        if self.creature:
+            self.__dict__['creature'] = None
             return True
         
         else:
