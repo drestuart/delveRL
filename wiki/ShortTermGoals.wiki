@@ -1,5 +1,6 @@
 #summary A notepad of current and near-future goals
 
+  * Make all classes subclasses of an abstract GetSet class, which warns about setting data members directly.
   * Field of view for player, monsters
   * AI improvements
   * Implement attacking
