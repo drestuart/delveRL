@@ -44,8 +44,7 @@ class Creature(GetSet):
             #Remove self from the old tile
             self.map.tiles[self.x][self.y].removeCreature()
         
-            self.__dict__['x'] += dx
-            self.__dict__['y'] += dy
+            self.setPosition(self.map, self.x + dx, self.y + dy)
             #self.energy -= self.moveCost
                         
             print self.name + " moves to", self.x, self.y
@@ -54,6 +53,11 @@ class Creature(GetSet):
         else:
             return False
         
+    def setPosition(self, map, x, y):
+        self.__dict__['x'] = x
+        self.__dict__['y'] = y
+        self.__dict__['map'] = map
+    
     def changeHP(self, amount):
         self.__dict__['hp'] = min(self.hp + amount, self.max_hp)
         if self.hp <= 0:
