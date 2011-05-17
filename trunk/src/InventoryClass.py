@@ -2,10 +2,11 @@
 import libtcodpy as libtcod
 from keys import *
 from menu import *
+from GetSetClass import *
 
 INVENTORY_WIDTH = 50
 
-class ItemInventory():
+class ItemInventory(GetSet):
     # A list of items, with some organization logic and the ability to choose an item out of a menu.
     def __init__(self):
         self.items = []  # This will probably be a dict at some point

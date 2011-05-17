@@ -3,6 +3,7 @@
 
 import random
 
+
 ethical = ("L", "C")
 moral = ("G", "E")
 

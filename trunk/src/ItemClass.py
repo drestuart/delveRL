@@ -1,8 +1,10 @@
 # External imports
 import libtcodpy as libtcod
 
+from GetSetClass import *
+
 # The item class-component
-class Item:
+class Item(GetSet):
     def __init__(self, use_function=None):
         self.use_function = use_function
     

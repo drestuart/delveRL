@@ -1,9 +1,11 @@
 # External imports
 import libtcodpy as libtcod
 
+from GetSetClass import *
+
 CONFUSE_NUM_TURNS = 10
 
-class AI:
+class AI(GetSet):
     
     def setOwner(self, creature):
         self.owner = creature

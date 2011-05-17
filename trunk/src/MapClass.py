@@ -9,7 +9,7 @@ import libtcodpy as libtcod
 # Internal imports
 from TileClass import *
 from CreatureClass import *
-
+from GetSetClass import *
 
 
 # Max monsters per room
@@ -54,7 +54,7 @@ class Rect:
                 self.y1 <= other.y2 and self.y2 >= other.y1)
         
         
-class Map:
+class Map(GetSet):
         
     def __init__(self, width, height, name = '', depth = 0):
         self.WIDTH = width

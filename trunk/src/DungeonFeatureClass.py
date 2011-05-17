@@ -1,6 +1,7 @@
 
+from GetSetClass import *
 
-class DungeonFeature:
+class DungeonFeature(GetSet):
     # Dummy class right now.  Will eventually represent dungeon features like traps, altars and stairs
     
     def __init__(self, blockSight = False, blockMove = False, baseSymbol = '}'):
