@@ -76,6 +76,11 @@ class Map(GetSet):
                 
         self.__dict__['openSpaces'] = []
         
+    def getTile(self, coords):
+        # Return a tile by coordinates, with a Coordinates object.
+        x, y = coords.getXY()
+        return self.tiles[x][y]
+        
     def createRooms(self):
         '''Add some rooms to the map'''
         rooms = []
