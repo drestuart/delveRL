@@ -19,5 +19,25 @@ class Coordinates(GetSet):
         self.__dict__['x'] = x
         self.__dict__['y'] = y
         
-    def getXY(self, x, y):
+    def getXY(self):
         return self.x, self.y
+    
+    def __repr__(self):
+        return "Coordinates(" + str(self.x) + "," + str(self.y) + ")"
+    
+    def __str__(self):
+        return str(self.getXY())
+    
+    
+    
+def main():
+    place1 = Coordinates(3,4)
+    print place1.getXY()
+    print place1
+    
+    place1.setXY(5,5)
+    print place1
+    print place1.__repr__()
+
+if __name__ == '__main__':
+    main()
