@@ -154,7 +154,7 @@ class Map(GetSet):
             
             for x in range(self.WIDTH):
                 for y in range(self.HEIGHT):
-                    coords = Coordinates(x, y)
+                    coords = Coordinates(x = x, y = y)
                     
                     tile = self.getTile(coords)
                     tile.passTime()
@@ -299,7 +299,7 @@ class Map(GetSet):
             randy = libtcod.random_get_int(0, 0, self.HEIGHT - 1)
         
             if not self.isBlocked(randx, randy):
-                return randx, randy
+                return Coordinates(x = randx, y = randy)
                 
     def getRandOpenSpace_NEW(self):
         '''Get the coordinates of a random open square on the map'''

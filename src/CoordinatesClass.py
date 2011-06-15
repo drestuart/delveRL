@@ -38,7 +38,7 @@ class Coordinates(GetSet):
         return str( (self.x, self.y) )
     
     def __add__(self, other):
-        return Coordinates(self['x'] + other['x'], self['y'] + other['y'])
+        return Coordinates(x = self['x'] + other['x'], y = self['y'] + other['y'])
     
     def __getitem__(self, item):
         if item in ['x', 'y']:
@@ -57,7 +57,7 @@ class Coordinates(GetSet):
 def main():
     place1 = Coordinates(x = 3, y = 4)
     print place1.getXY()
-    print place1
+    print place1['x']
     
     place1.setXY(x = 5, y = 5)
     print place1
