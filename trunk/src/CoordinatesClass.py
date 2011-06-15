@@ -1,5 +1,8 @@
 # A class to hold coordinate (x, y) coordinates.  The idea is the make the whole thing order-independent.
 
+# External imports
+from math import *
+
 # Internal imports
 from GetSetClass import *
 
@@ -43,6 +46,11 @@ class Coordinates(GetSet):
         
         else:
             raise ValueError(item)
+        
+    def distance(self, other):
+        # Return the distance to some coordinates.  For now we're using the
+        # Euclidean distance, but maybe switch to A* distance later?
+        return sqrt((other['x'] - self['x']) ** 2 + (other['y'] - self['y']) ** 2)
     
     
     
@@ -54,6 +62,9 @@ def main():
     place1.setXY(x = 5, y = 5)
     print place1
     print place1.__repr__()
+    
+    place2 = Coordinates(x = 10, y = 12)
+    print place1.distance(place2)
 
 if __name__ == '__main__':
     main()
