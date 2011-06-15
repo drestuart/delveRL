@@ -1,13 +1,13 @@
-# A class to hold coordinate (x, y) coordinates
+# A class to hold coordinate (x, y) coordinates.  The idea is the make the whole thing order-independent.
 
 # Internal imports
 from GetSetClass import *
 
 class Coordinates(GetSet):
      
-    def __init__(self, x, y):
-        self.__dict__['x'] = x
-        self.__dict__['y'] = y
+    def __init__(self, **kwargs):
+        self.__dict__['x'] = kwargs['x']
+        self.__dict__['y'] = kwargs['y']
         
     def setX(self, x):
         self.__dict__['x'] = x
@@ -15,27 +15,27 @@ class Coordinates(GetSet):
     def setY(self, y):
         self.__dict__['y'] = y
         
-    def setXY(self, x, y):
-        self.__dict__['x'] = x
-        self.__dict__['y'] = y
+    def setXY(self, **kwargs):
+        self.__dict__['x'] = kwargs['x']
+        self.__dict__['y'] = kwargs['y']
         
     def getXY(self):
-        return self.x, self.y
+        return {'x' : self.x, 'y' : self.y}
     
     def __repr__(self):
-        return "Coordinates(" + str(self.x) + "," + str(self.y) + ")"
+        return "Coordinates(x = " + str(self.x) + ", y = " + str(self.y) + ")"
     
     def __str__(self):
-        return str(self.getXY())
+        return str( (self.x, self.y) )
     
     
     
 def main():
-    place1 = Coordinates(3,4)
+    place1 = Coordinates(x = 3, y = 4)
     print place1.getXY()
     print place1
     
-    place1.setXY(5,5)
+    place1.setXY(x = 5, y = 5)
     print place1
     print place1.__repr__()
 
