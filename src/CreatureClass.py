@@ -34,28 +34,30 @@ class Creature(GetSet):
         self.__dict__['attackCost'] = attackCost
         
         self.__dict__['map'] = map
-        self.__dict__['x'] = x
-        self.__dict__['y'] = y
+        self.__dict__['coordinates'] = Coordinates(x = x, y = y)
         
     def move(self, dx, dy):
-               
-        if self.map.tiles[self.x + dx][self.y + dy].addCreature(self):
+        
+        newCoords = self.coordinates + Coordinates(dx, dy)
+        newTile = self.map.getTile(newCoords)
+        
+        if newTile.addCreature(self):
             
             #Remove self from the old tile
-            self.map.tiles[self.x][self.y].removeCreature()
+            oldTile = self.map.getTile(self.coordinates)
+            oldTile.removeCreature()
         
-            self.setPosition(self.map, self.x + dx, self.y + dy)
+            self.setPosition(self.map, newCoords)
             #self.energy -= self.moveCost
                         
-            print self.name + " moves to", self.x, self.y
+            print self.name + " moves to", self.coordinates
             return True
         
         else:
             return False
         
-    def setPosition(self, map, x, y):
-        self.__dict__['x'] = x
-        self.__dict__['y'] = y
+    def setPosition(self, map, coords):
+        self.__dict__['coordinates'] = coords
         self.__dict__['map'] = map
     
     def changeHP(self, amount):

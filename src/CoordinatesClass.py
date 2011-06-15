@@ -22,11 +22,27 @@ class Coordinates(GetSet):
     def getXY(self):
         return {'x' : self.x, 'y' : self.y}
     
+    def getX(self):
+        return self.x
+    
+    def getY(self):
+        return self.y
+    
     def __repr__(self):
         return "Coordinates(x = " + str(self.x) + ", y = " + str(self.y) + ")"
     
     def __str__(self):
         return str( (self.x, self.y) )
+    
+    def __add__(self, other):
+        return Coordinates(self['x'] + other['x'], self['y'] + other['y'])
+    
+    def __getitem__(self, item):
+        if item in ['x', 'y']:
+            return self.__dict__[item]
+        
+        else:
+            raise ValueError(item)
     
     
     

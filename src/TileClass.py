@@ -24,7 +24,7 @@ class Tile(GetSet):
                  baseColor = colorLightGround, baseBackground = libtcod.BKGND_NONE, 
                  feature = None, baseDescription = "floor"):
         
-        self.__dict__['coordinates'] = Coordinates(x, y)
+        self.__dict__['coordinates'] = Coordinates(x = x, y = y)
         self.__dict__['blockMove'] = blockMove
         self.__dict__['blockSight'] = blockSight
         self.__dict__['baseSymbol'] = baseSymbol
@@ -175,6 +175,9 @@ class Tile(GetSet):
         
         else:
             return self.baseDescription   
+        
+    def coords(self):
+        return self.coordinates
     
 #    # drawing management stuff. will be moved to the console class?    
 #    def draw(self, con):
