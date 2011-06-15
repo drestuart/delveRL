@@ -5,6 +5,7 @@ import libtcodpy as libtcod
 from AlignmentClass import *
 from AIClass import *
 from GetSetClass import *
+from CoordinatesClass import *
 
 class Creature(GetSet):
     #combat-related properties and methods (monster, player, NPC).
@@ -38,7 +39,7 @@ class Creature(GetSet):
         
     def move(self, dx, dy):
         
-        newCoords = self.coordinates + Coordinates(dx, dy)
+        newCoords = self.coordinates + Coordinates(x = dx, y = dy)
         newTile = self.map.getTile(newCoords)
         
         if newTile.addCreature(self):
