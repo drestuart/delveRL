@@ -78,8 +78,14 @@ class Map(GetSet):
         
     def getTile(self, coords):
         # Return a tile by coordinates, with a Coordinates object.
-        x, y = coords.getXY()
+        x, y = coords['x'], coords['y']
         return self.tiles[x][y]
+    
+    def setTile(self, coords, tile):
+        x, y = coords['x'], coords['y']
+        self.__dict__['tiles'][x][y] = tile
+        if not tile.blocksMove():
+            self.__dict__['openSpaces'].append(tile)
         
     def createRooms(self):
         '''Add some rooms to the map'''
@@ -148,8 +154,11 @@ class Map(GetSet):
             
             for x in range(self.WIDTH):
                 for y in range(self.HEIGHT):
-                    self.tiles[x][y].passTime()
-                    cr = self.tiles[x][y].creature
+                    coords = Coordinates(x, y)
+                    
+                    tile = self.getTile(coords)
+                    tile.passTime()
+                    cr = tile.creature
                     
                     if cr is not None:
                         creatures.append(cr)
@@ -158,32 +167,30 @@ class Map(GetSet):
                 cr.passTime()
                         
                         
-    def addTile(self, x, y, tile):
-        self.__dict__['tiles'][x][y] = tile
-        if not tile.blocksMove():
-            self.__dict__['openSpaces'].append(tile)
+
                         
     # Create a room
     def createRoom(self, room):
         #go through the tiles in the rectangle and make them floors
         for x in range(room.x1 + 1, room.x2):
             for y in range(room.y1 + 1, room.y2):
-                self.addTile(x, y, Tile(x, y))  # Default is a floor tile
+                self.setTile(Coordinates(x = x, y = y), Tile(x, y))  # Default is a floor tile
 
     # Carve out a horizontal tunnel
     def createHTunnel(self, x1, x2, y):
         for x in range(min(x1, x2), max(x1, x2) + 1):
-            self.addTile(x, y, Tile(x, y))  # Default is a floor tile
+            self.setTile(Coordinates(x = x, y = y), Tile(x, y))  # Default is a floor tile
 
     # Carve out a vertical tunnel
     def createVTunnel(self, y1, y2, x):
         for y in range(min(y1, y2), max(y1, y2) + 1):
-            self.addTile(x, y, Tile(x, y))  # Default is a floor tile
+            self.setTile(Coordinates(x = x, y = y), Tile(x, y))  # Default is a floor tile
 
 
     # Test if a square is blocked
     def isBlocked(self, x, y):
-        return self.tiles[x][y].blocksMove()
+        coords = Coordinates(x = x, y = y)
+        return self.getTile(coords).blocksMove()
     
 
 
@@ -271,7 +278,8 @@ class Map(GetSet):
         for x in range(self.WIDTH):
             for y in range(self.HEIGHT):
                 #try:
-                    symbol, color, background = self.tiles[x][y].toDraw()
+                    coords = Coordinates(x = x, y = y)
+                    symbol, color, background = self.getTile(coords).toDraw()
                     libtcod.console_set_foreground_color(con, color)
                     libtcod.console_put_char(con, x, y, symbol, background)
                 #except:
@@ -294,21 +302,22 @@ class Map(GetSet):
                 return randx, randy
                 
     def getRandOpenSpace_NEW(self):
-        '''Get a random open square on the map'''
+        '''Get the coordinates of a random open square on the map'''
         if self.openSpaces:
             randOpenTile = random.choice(self.openSpaces)
-            return randOpenTile.x, randOpenTile.y
+            return Coordinates(x = randOpenTile.x, y = randOpenTile.y)
         
         else:
             return None, None
             
     def placeCreature(self, creature):
         while True:
-            x, y = self.getRandOpenSpace() 
-        
-            if not self.tiles[x][y].creature:
-                self.tiles[x][y].addCreature(creature)
-                creature.setPosition(self, x, y)
+            coords = self.getRandOpenSpace() 
+            tile = self.getTile(coords)
+            
+            if not tile.creature:
+                tile.addCreature(creature)
+                creature.setPosition(self, coords)
                 break
             
     def placeCreatures(self, num_creatures):
