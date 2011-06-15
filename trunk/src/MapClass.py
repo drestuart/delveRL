@@ -309,6 +309,14 @@ class Map(GetSet):
     def placeCreatures(self, num_creatures):
         for i in range(num_creatures):
             self.placeCreature(randomCreature(self))
+            
+    def getSpacesInRadius(self, radius):
+        pass
+    
+    def getSpacesAtRadius(self, radius):
+        pass        
+            
+    
                 
 def main():
         map = Map(40, 40)

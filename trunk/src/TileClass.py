@@ -5,6 +5,7 @@ import libtcodpy as libtcod
 from DungeonFeatureClass import *
 from InventoryClass import *
 from GetSetClass import *
+from CoordinatesClass import *
 
 # Constants
 
@@ -23,8 +24,7 @@ class Tile(GetSet):
                  baseColor = colorLightGround, baseBackground = libtcod.BKGND_NONE, 
                  feature = None, baseDescription = "floor"):
         
-        self.__dict__['x'] = x
-        self.__dict__['y'] = y
+        self.__dict__['coordinates'] = Coordinates(x, y)
         self.__dict__['blockMove'] = blockMove
         self.__dict__['blockSight'] = blockSight
         self.__dict__['baseSymbol'] = baseSymbol
