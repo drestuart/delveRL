@@ -25,7 +25,7 @@ LIMIT_FPS = 20  #20 frames-per-second maximum
 
 libtcod.console_set_custom_font(os.path.join(FONTS_DIR, 'arial10x10.png'), 
                                 libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'python/libtcod tutorial', False)
+libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'delveRL', False)
 libtcod.sys_set_fps(LIMIT_FPS)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 

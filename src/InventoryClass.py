@@ -9,7 +9,7 @@ INVENTORY_WIDTH = 50
 class ItemInventory(GetSet):
     # A list of items, with some organization logic and the ability to choose an item out of a menu.
     def __init__(self):
-        self.items = []  # This will probably be a dict at some point
+        self.__dict__['items'] = []  # This will probably be a dict at some point
         
     def __len__(self):
         return len(self.items)
