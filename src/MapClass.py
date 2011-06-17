@@ -55,6 +55,7 @@ class Rect:
         
         
 class Map(GetSet):
+    '''A class that models a map, essentially an array of tiles.  Holds functionality for drawing itself in a console.  Subclassed into LevelMap and FOVMap.'''
         
     def __init__(self, width, height, name = '', depth = 0):
         self.__dict__['WIDTH'] = width
@@ -75,6 +76,7 @@ class Map(GetSet):
                 self.__dict__['tileList'].append(self.tiles[x][y])
                 
         self.__dict__['openSpaces'] = []
+
         
     def getTile(self, coords):
         # Return a tile by coordinates, with a Coordinates object.
@@ -87,6 +89,55 @@ class Map(GetSet):
         if not tile.blocksMove():
             self.__dict__['openSpaces'].append(tile)
         
+
+
+
+    # Test if a square is blocked
+    def isBlocked(self, x, y):
+        coords = Coordinates(x = x, y = y)
+        return self.getTile(coords).blocksMove()
+    
+
+
+
+
+                
+    # Draw that map!
+    def draw(self, con):
+#        libtcod.console_set_foreground_color(con, self.color())
+#        libtcod.console_put_char(con, self.x, self.y, self.symbol(), self.background())
+
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                #try:
+                    coords = Coordinates(x = x, y = y)
+                    symbol, color, background = self.getTile(coords).toDraw()
+                    libtcod.console_set_foreground_color(con, color)
+                    libtcod.console_put_char(con, x, y, symbol, background)
+                #except:
+                #    print symbol, color, background
+                    
+                    
+    # Erase that map!
+    def clear(self, con):
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                libtcod.console_put_char(con, x, y, ' ', libtcod.BKGND_NONE)
+                
+            
+    def getSpacesInRadius(self, radius, centerCoords):
+        pass
+    
+    def getSpacesAtRadius(self, radius, centerCoords):
+        pass        
+            
+            
+            
+class LevelMap(Map):
+    '''A Map subclass for modeling one dungeon level.  Includes functionality for passing time and level construction.'''
+    def __init__(self, width, height, name = '', depth = 0):
+        super(LevelMap, self).__init__(width, height, name, depth)
+    
     def createRooms(self):
         '''Add some rooms to the map'''
         rooms = []
@@ -165,10 +216,7 @@ class Map(GetSet):
                         
             for cr in creatures:
                 cr.passTime()
-                        
-                        
-
-                        
+                                               
     # Create a room
     def createRoom(self, room):
         #go through the tiles in the rectangle and make them floors
@@ -186,14 +234,38 @@ class Map(GetSet):
         for y in range(min(y1, y2), max(y1, y2) + 1):
             self.setTile(Coordinates(x = x, y = y), Tile(x, y))  # Default is a floor tile
 
+            
+    def placeCreature(self, creature):
+        while True:
+            coords = self.getRandOpenSpace() 
+            tile = self.getTile(coords)
+            
+            if not tile.creature:
+                tile.addCreature(creature)
+                creature.setPosition(self, coords)
+                break
+            
+    def placeCreatures(self, num_creatures):
+        for i in range(num_creatures):
+            self.placeCreature(randomCreature(self))
 
-    # Test if a square is blocked
-    def isBlocked(self, x, y):
-        coords = Coordinates(x = x, y = y)
-        return self.getTile(coords).blocksMove()
-    
-
-
+    def getRandOpenSpace(self):
+        '''Get a random open square on the map'''
+        while True:
+            randx = libtcod.random_get_int(0, 0, self.WIDTH - 1)
+            randy = libtcod.random_get_int(0, 0, self.HEIGHT - 1)
+        
+            if not self.isBlocked(randx, randy):
+                return Coordinates(x = randx, y = randy)
+                
+    def getRandOpenSpace_NEW(self):
+        '''Get the coordinates of a random open square on the map'''
+        if self.openSpaces:
+            randOpenTile = random.choice(self.openSpaces)
+            return Coordinates(x = randOpenTile.x, y = randOpenTile.y)
+        
+        else:
+            return None, None
 
     # Add some monsters! Rawr!
     def placeObjects(self, room):
@@ -269,68 +341,13 @@ class Map(GetSet):
 #                    item = Object(x, y, '?', 'scroll of confusion', libtcod.light_yellow, item=item_component)
 #    
 #                objects.append(item)
-                
-    # Draw that map!
-    def draw(self, con):
-#        libtcod.console_set_foreground_color(con, self.color())
-#        libtcod.console_put_char(con, self.x, self.y, self.symbol(), self.background())
 
-        for x in range(self.WIDTH):
-            for y in range(self.HEIGHT):
-                #try:
-                    coords = Coordinates(x = x, y = y)
-                    symbol, color, background = self.getTile(coords).toDraw()
-                    libtcod.console_set_foreground_color(con, color)
-                    libtcod.console_put_char(con, x, y, symbol, background)
-                #except:
-                #    print symbol, color, background
-                    
-                    
-    # Erase that map!
-    def clear(self, con):
-        for x in range(self.WIDTH):
-            for y in range(self.HEIGHT):
-                libtcod.console_put_char(con, x, y, ' ', libtcod.BKGND_NONE)
-                
-    def getRandOpenSpace(self):
-        '''Get a random open square on the map'''
-        while True:
-            randx = libtcod.random_get_int(0, 0, self.WIDTH - 1)
-            randy = libtcod.random_get_int(0, 0, self.HEIGHT - 1)
-        
-            if not self.isBlocked(randx, randy):
-                return Coordinates(x = randx, y = randy)
-                
-    def getRandOpenSpace_NEW(self):
-        '''Get the coordinates of a random open square on the map'''
-        if self.openSpaces:
-            randOpenTile = random.choice(self.openSpaces)
-            return Coordinates(x = randOpenTile.x, y = randOpenTile.y)
-        
-        else:
-            return None, None
-            
-    def placeCreature(self, creature):
-        while True:
-            coords = self.getRandOpenSpace() 
-            tile = self.getTile(coords)
-            
-            if not tile.creature:
-                tile.addCreature(creature)
-                creature.setPosition(self, coords)
-                break
-            
-    def placeCreatures(self, num_creatures):
-        for i in range(num_creatures):
-            self.placeCreature(randomCreature(self))
-            
-    def getSpacesInRadius(self, radius):
-        pass
-    
-    def getSpacesAtRadius(self, radius):
-        pass        
-            
-    
+
+class FOVMap(Map):
+    '''A map subclass for a creature's Field of View.  Keeps track of what the creature can see, and only updates squares that can be seen.  Reads from its corresponding LevelMap object.'''
+    pass
+
+
                 
 def main():
         map = Map(40, 40)
