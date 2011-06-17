@@ -8,7 +8,7 @@ CONFUSE_NUM_TURNS = 10
 class AI(GetSet):
     
     def setOwner(self, creature):
-        self.owner = creature
+        self.__dict__['owner'] = creature
 
 class ConfusedMonster(AI):
     #AI for a temporarily confused monster (reverts to previous AI
