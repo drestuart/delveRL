@@ -29,7 +29,7 @@ libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'delveRL', False)
 libtcod.sys_set_fps(LIMIT_FPS)
 con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-map = Map(MAP_WIDTH, MAP_HEIGHT)
+map = LevelMap(MAP_WIDTH, MAP_HEIGHT)
 map.createRooms()
 map.placeCreatures(3)
 
