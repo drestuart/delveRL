@@ -47,6 +47,10 @@ class Coordinates(GetSet):
         else:
             raise ValueError(item)
         
+    def __eq__(self, other):
+        # Equality comparison.
+        return ( (self['x'] == other['x']) and (self['y'] == other['y']) )
+        
     def distance(self, other):
         # Return the distance to some coordinates.  For now we're using the
         # Euclidean distance, but maybe switch to A* distance later?

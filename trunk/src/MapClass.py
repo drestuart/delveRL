@@ -126,10 +126,89 @@ class Map(GetSet):
                 
             
     def getSpacesInRadius(self, radius, centerCoords):
-        pass
+        '''Returns a list of all the coordinates at a distance <= *radius* from the given center space.  Simply calls getSpacesAtRadius for 1 to *radius*.'''
+        
+        assert radius >= 0 and radius == int(radius) #Do better error checking here.
+        
+        coordList = [centerCoords]
+        
+        for i in range(radius):
+            coordList += self.getSpacesAtRadius(i + 1, centerCoords)
     
     def getSpacesAtRadius(self, radius, centerCoords):
-        pass        
+        '''Returns a list of all the coordinates at a distance of exactly *radius* from the given center space.  There is probably a much better way to do this algorithm.'''
+               
+        assert radius > 0 and radius == int(radius) #Do better error checking here.
+        
+        # The plan here is to encode the directions to each square as a string
+        # with u, l, r, and d for up, left, etc.  Fortunately each set of
+        # directions can only have one of u/d and one of l/r.  So, to exhaust
+        # all possible strings, I will start with a string of radius*u.
+        baseDirString = 'u'*radius
+        
+        # I will store all of the direction strings in the directions list, and
+        # then convert them into resulting coordinates in the coordsList.  The
+        # baseDirections list will hold only the u/l directions, and I will use
+        # it to generate the rest of the strings by replacing u->d, l->r, and
+        # both.  So, e.g., 'ul' -> ['dl', 'ur', 'dr'], and those all go in the
+        # directions list.
+        directions = [baseDirString]
+        baseDirections = [baseDirString]
+        coordList = []
+        
+        for i in range(radius):
+            newString = baseDirString.replace('u', 'l', 1)
+            baseDirections.append(newString)
+            
+            if newString not in directions:
+                directions.append(newString)
+            
+            
+        # baseDirections now holds all possible direction strings of length
+        # radius composed of u's and l's, up to reordering, which does nothing.
+        # We will now set about converting those to the other directions as
+        # well.
+        
+        # u->d
+        for direction in baseDirections:
+            newString = direction.replace('u', 'd')
+            if newString not in directions:
+                directions.append(newString)
+        
+        # l->r
+        for direction in baseDirections:
+            newString = direction.replace('l', 'r')
+            if newString not in directions:
+                directions.append(newString)
+        
+        
+        # u->d, l->r
+        for direction in baseDirections:
+            newString = direction.replace('u', 'd')
+            newString = direction.replace('l', 'r')
+            if newString not in directions:
+                directions.append(newString)
+        
+        #Now, convert these directions into coordinates from the center coordinates provided.
+
+        # The coordinates to add based on the direction
+        dif = {'u':Coordinates(x = 0, y = 1), 'd':Coordinates(x = 0, y = -1),
+               'l':Coordinates(x = -1, y = 0), 'r':Coordinates(x = 1, y = 0)}
+        
+        for dirString in directions:
+            
+            newCoords = centerCoords
+            
+            # Read out the direction instructions one at a time
+            for letter in dirString:
+                #Move the coordinates by a given amount 
+                newCoords += dif[letter]
+                
+            # Add to the list of new coords.  They should be unique, but it's good to check.
+            if newCoords not in coordList:
+                coordList.append(newCoords)
+                
+        return coordList
             
             
             
