@@ -37,6 +37,9 @@ class Creature(GetSet):
         self.__dict__['map'] = map
         self.__dict__['coordinates'] = Coordinates(x = x, y = y)
         
+    def getCoords(self):
+        return self.coordinates
+        
     def move(self, dx, dy):
         
         newCoords = self.coordinates + Coordinates(x = dx, y = dy)

@@ -5,12 +5,15 @@
 # External imports
 import random
 import libtcodpy as libtcod
+import os
+import copy
 
 # Internal imports
 from TileClass import *
 from CreatureClass import *
 from GetSetClass import *
-
+from CoordinatesClass import *
+from colors import *
 
 # Max monsters per room
 MAX_ROOM_MONSTERS = 3
@@ -21,8 +24,7 @@ MAX_ROOM_ITEMS = 2
 # Field of view constants
 FOV_ALGO = 0  #default FOV algorithm
 FOV_LIGHT_WALLS = True
-TORCH_RADIUS = 10
-fov_recompute = True
+
 
 # Map dimensions
 MAP_WIDTH = 80
@@ -76,7 +78,16 @@ class Map(GetSet):
                 self.__dict__['tileList'].append(self.tiles[x][y])
                 
         self.__dict__['openSpaces'] = []
+        
+        self.__dict__['toRecomputeFOV'] = True
+        self.__dict__['toRecomputeFOVProps'] = True
 
+    def recomputeFOV(self):
+        self.__dict__['toRecomputeFOV'] = True
+    
+    def recomputedFOV(self):
+        self.__dict__['toRecomputeFOV'] = False
+        
         
     def getTile(self, coords):
         # Return a tile by coordinates, with a Coordinates object.
@@ -97,7 +108,12 @@ class Map(GetSet):
         coords = Coordinates(x = x, y = y)
         return self.getTile(coords).blocksMove()
     
-
+    def blocksMove(self, x, y):
+        return self.isBlocked(x, y)
+    
+    def blocksSight(self, x, y):
+        coords = Coordinates(x = x, y = y)
+        return self.getTile(coords).blocksSight()
 
 
 
@@ -422,14 +438,116 @@ class LevelMap(Map):
 #                objects.append(item)
 
 
-class FOVMap(Map):
+class FOVMap():
     '''A map subclass for a creature's Field of View.  Keeps track of what the creature can see, and only updates squares that can be seen.  Reads from its corresponding LevelMap object.'''
-    pass
 
+
+    def __init__(self, baseMap):
+        #super(FOVMap, self).__init__(width, height, name, depth)
+        self.__dict__['baseMap'] = baseMap
+        self.__dict__['toRecompute'] = True
+        
+        # Initialize the fov_map object for libtcod
+        self.__dict__['fov_map'] = libtcod.map_new(MAP_WIDTH, MAP_HEIGHT)
+        
+        self.__dict__['tiles'] = [[ None 
+                                    for y in range(self.baseMap.HEIGHT) ]
+                                    for x in range(self.baseMap.WIDTH) ]
+        
+        self.computeFOVProperties()
+        
+    def getTile(self, coords):
+        # Return a tile by coordinates, with a Coordinates object.
+        x, y = coords['x'], coords['y']
+        return self.tiles[x][y]
+    
+    def setTile(self, coords, tileIn):
+        self.__dict__['tiles'][coords['x']][coords['y']] = copy.deepcopy(tileIn)
+        
+    def computeFOVProperties(self):
+        for y in range(self.baseMap.HEIGHT):
+            for x in range(self.baseMap.WIDTH):
+                libtcod.map_set_properties(self.fov_map, x, y, 
+                                           not self.baseMap.blocksMove(x, y), 
+                                           not self.baseMap.blocksSight(x, y))
+        
+        
+    def recompute(self):
+        self.__dict__['toRecompute'] = True
+        
+    def recomputed(self):
+        self.__dict__['toRecompute'] = False
+                
+    def computeFOV(self, position, radius):
+        '''Compute the field of view of this map with respect to a particular position'''
+        if self.toRecompute == False and self.baseMap.toRecomputeFOV == False:
+            return
+        else:
+            
+            self.__dict__['toRecompute'] = False
+            
+            libtcod.map_compute_fov(self.fov_map, position['x'], position['y'], 
+                                radius, FOV_LIGHT_WALLS, FOV_ALGO)
+
+            self.computeFOVProperties()
+            
+            self.recomputed()
+            self.baseMap.recomputedFOV()
+        
+    def clear(self, con):
+        self.baseMap.clear(con)
+        
+    def draw(self, con, position, radius):
+        self.computeFOV(position, radius)
+        
+        for x in range(self.baseMap.WIDTH):
+            for y in range(self.baseMap.HEIGHT):
+                coords = Coordinates(x = x, y = y)
+                tile = self.baseMap.getTile(coords)
+                
+                if libtcod.map_is_in_fov(self.fov_map, x, y):  # We can see this tile
+                    symbol, color, background = tile.toDraw()
+                    self.setTile(coords, tile)  # Remember this tile
+                
+                elif self.getTile(coords):  # We've seen this one before
+                    symbol = self.getTile(coords).symbol()
+                    color = libtcod.dark_grey
+                    background = libtcod.light_grey
+                        
+                else:
+                    background = libtcod.BKGND_NONE
+                    color = colorDarkGround
+                    symbol = ' '
+                    
+                libtcod.console_set_foreground_color(con, color)
+                libtcod.console_put_char(con, x, y, symbol, background)
+                
 
                 
 def main():
-        map = Map(40, 40)
+    SCREEN_WIDTH = 80
+    SCREEN_HEIGHT = 69
+    
+    libtcod.console_set_custom_font(os.path.join('../fonts', 'arial10x10.png'), 
+                                libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'delveRL', False)
+    libtcod.sys_set_fps(20)
+    con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    map = Map(40, 40)
+    lmap = LevelMap(40, 50)
+    fovmap = FOVMap(lmap)
+    coords = fovmap.baseMap.getRandOpenSpace()
+    
+    while not libtcod.console_is_window_closed():
+ 
+        fovmap.draw(con, coords, 5)
+        libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
+        libtcod.console_flush()
+        fovmap.clear(con)
+        
+        
+    print "Win"
 
 if __name__ == '__main__':
         main()
