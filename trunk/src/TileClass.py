@@ -6,15 +6,7 @@ from DungeonFeatureClass import *
 from InventoryClass import *
 from GetSetClass import *
 from CoordinatesClass import *
-
-# Constants
-
-
-# Wall and ground colors
-colorDarkWall = libtcod.Color(0, 0, 100)
-colorLightWall = libtcod.Color(130, 110, 50)
-colorDarkGround = libtcod.Color(50, 50, 150)
-colorLightGround = libtcod.Color(200, 180, 50)
+from colors import *
 
 # The Tile class
 
@@ -36,6 +28,8 @@ class Tile(GetSet):
         self.__dict__['creature'] = None   #The creature on this tile.  The ONE creature, by the way.
         
         self.__dict__['feature'] = feature
+        
+
             
     def toDraw(self):
         # Returns a tuple of the tile's symbol, color, and background for the

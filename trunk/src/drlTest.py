@@ -45,13 +45,18 @@ map.placeCreature(cr4)
 
 player = Player(map)
 map.placeCreature(player)
+
+fovmap = FOVMap(map)
  
 while not libtcod.console_is_window_closed():
  
-    map.draw(con)
+    print "Drawing"
+    fovmap.draw(con, player.getCoords(), 5)  
+    print "Recomputing FOV"
+    fovmap.recompute()
     libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
     libtcod.console_flush()
-    map.clear(con)
+    fovmap.clear(con)
     
     #if handle_keys():
     #    break
